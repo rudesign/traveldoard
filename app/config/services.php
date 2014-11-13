@@ -10,12 +10,31 @@ use Phalcon\Session\Adapter\Files as SessionAdapter;
 
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
+ * @todo which services included?
  */
 $di = new FactoryDefault();
 
-/**
- * The URL component is used to generate all kind of urls in the application
- */
+// Common config
+$di->set('config', function() use ($di){
+    return include __DIR__ . '/config.php';
+}, true);
+
+// Router
+$di->set('router', function () use ($di) {
+    return include __DIR__ . '/router/common.php';
+}, true);
+
+// Session
+$di->set('session', function () {
+    $session = new Session(array(
+        'cookie_lifetime' => 86400,
+    ));
+    $session->start();
+
+    return $session;
+});
+
+// URL
 $di->set('url', function () use ($config) {
     $url = new UrlResolver();
     $url->setBaseUri($config->application->baseUri);
@@ -23,9 +42,18 @@ $di->set('url', function () use ($config) {
     return $url;
 }, true);
 
-/**
- * Setting up the view component
- */
+// Database connection
+$di->set('db', function () use ($config) {
+    return new DbAdapter(array(
+        'host' => $config->database->host,
+        'username' => $config->database->username,
+        'password' => $config->database->password,
+        'dbname' => $config->database->dbname,
+        'charset' => 'utf8',
+    ));
+});
+
+// View
 $di->set('view', function () use ($config) {
 
     $view = new View();
@@ -33,48 +61,22 @@ $di->set('view', function () use ($config) {
     $view->setViewsDir($config->application->viewsDir);
 
     $view->registerEngines(array(
-        '.volt' => function ($view, $di) use ($config) {
-
-            $volt = new VoltEngine($view, $di);
-
-            $volt->setOptions(array(
-                'compiledPath' => $config->application->cacheDir,
-                'compiledSeparator' => '_'
-            ));
-
-            return $volt;
-        },
         '.phtml' => 'Phalcon\Mvc\View\Engine\Php'
     ));
 
     return $view;
 }, true);
 
-/**
- * Database connection is created based in the parameters defined in the configuration file
- */
-$di->set('db', function () use ($config) {
-    return new DbAdapter(array(
-        'host' => $config->database->host,
-        'username' => $config->database->username,
-        'password' => $config->database->password,
-        'dbname' => $config->database->dbname
-    ));
+// Cookie helper
+$di->set('cookie',  function()
+{
+    return new Cookie();
 });
 
 /**
  * If the configuration specify the use of metadata adapter use it or use memory otherwise
+ * @todo what MetaDataAdapter is needed for?
  */
 $di->set('modelsMetadata', function () {
     return new MetaDataAdapter();
-});
-
-/**
- * Start the session the first time some component request the session service
- */
-$di->set('session', function () {
-    $session = new SessionAdapter();
-    $session->start();
-
-    return $session;
 });
