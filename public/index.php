@@ -28,4 +28,10 @@ try {
 
 } catch (\Exception $e) {
     echo $e->getMessage();
+
+    echo '<h1>Stacktrace</h1>';
+
+    foreach($e->getTrace() as $row){
+        echo $row['class'].$row['type'].$row['function'].($row['file'] ? ' (file '.$row['file'].' at line '.$row['line'] : '').')<br />';
+    }
 }

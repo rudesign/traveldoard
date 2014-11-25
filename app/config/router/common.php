@@ -16,6 +16,9 @@ $router->add('/');
 // Users + People group
 include __DIR__ . '/users.php';
 
+include __DIR__ . '/parser.php';
+
+
 // Not found
 $router->notFound(array(
     'controller'=>'error',

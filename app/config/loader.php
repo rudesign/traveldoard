@@ -10,6 +10,13 @@ $loader->registerDirs(
         $config->application->controllersDir,
         $config->application->modelsDir,
         $config->application->helpersDir,
-        $config->application->libraryDir
+        $config->application->libraryDir,
+        $config->application->incubatorDir
     )
 )->register();
+
+$loader->registerNamespaces(array(
+    'Phalcon' => $config->application->incubatorDir.'/Library/Phalcon/'
+));
+
+$loader->register();
