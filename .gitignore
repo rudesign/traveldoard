@@ -1,3 +1,4 @@
 app/cache
 public/files
 public/temp
+app/config/config.php
