@@ -106,7 +106,7 @@ EOD;
 
         $cities = new Cities();
 
-        $result = $cities->query()->where('json IS NULL')->andWhere('country_id = 1')->limit(1)->execute();
+        $result = $cities->query()->where('json IS NULL')->andWhere('country_id = 1')->andWhere('http_status < 200')->limit(1)->execute();
 
         if($city = $result->getFirst()){
             echo $city->getCityId().': '.$city->getTitleEn();
@@ -114,6 +114,7 @@ EOD;
             $jsonStr = $this->getLocationJSON($city->getTitleEn());
 
             $city->setJson($jsonStr);
+            $city->setHTTPStatus(200);
 
             if($city->save()){
                 echo ' OK';
