@@ -1,11 +1,11 @@
 <?php
 
 $group = new \Phalcon\Mvc\Router\Group(array(
-    'controller' => 'parser'
+    'controller' => 'process'
 ));
 
 $group->add(
-    '/parser/:action',
+    '/process/:action',
     array(
         'action'=>1,
     )

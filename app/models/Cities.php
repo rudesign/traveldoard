@@ -221,6 +221,20 @@ class Cities extends \Phalcon\Mvc\Model
         return $this;
     }
 
+    public function setDestId($dest_id = 0)
+    {
+        $this->dest_id = $dest_id;
+
+        return $this;
+    }
+
+    public function setHolels($hotels = 0)
+    {
+        $this->hotels = $hotels;
+
+        return $this;
+    }
+
     /**
      * Returns the value of field city_id
      *
@@ -336,6 +350,16 @@ class Cities extends \Phalcon\Mvc\Model
         return $this->http_status;
     }
 
+    public function getDestId()
+    {
+        return $this->dest_id;
+    }
+
+    public function getHotels()
+    {
+        return $this->hotels;
+    }
+
     /**
      * Independent Column Mapping.
      */
@@ -354,6 +378,8 @@ class Cities extends \Phalcon\Mvc\Model
             'region_en' => 'region_en', 
             'json' => 'json',
             'http_status' => 'http_status',
+            'dest_id' => 'dest_id',
+            'hotels' => 'hotels',
         );
     }
 
