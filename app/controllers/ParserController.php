@@ -123,29 +123,62 @@ EOD;
             echo 'No data';
         }
 
+        $this->view->disable();
+    }
+
+    public function getCityHotelsAction(){
+
+        $cities = new Cities();
+
+        $result = $cities->query()->where('country_id = 1')->andWhere('http_status = 201')->limit(1)->execute();
+
+        if($city = $result->getFirst()){
+            echo $city->getCityId().': '.$city->getTitleEn();
+
+            $dest_id = $city->getDestId();
+
+            $bashCommand = <<<EOD
+curl -H "User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36" -H "Content-Type: text/plain; charset=utf-8" -H "Accept: */*" -H "Accept-Language: en-US,en;q=0.8,ru;q=0.6" -X GET 'http://www.booking.com/searchresults.ru.html?city={$dest_id}&lang=ru&rows=50&offset=0'
+EOD;
+
+            $output = shell_exec($bashCommand);
+
+            echo $output;
+
+            if($res = fopen($_SERVER['DOCUMENT_ROOT'].'/rawHotels/'.$city->getCityId().'.html', 'a')){
+                //fwrite($res, $output);
+
+                fclose($res);
+            }
+
+            $city->setHTTPStatus(202);
+
+//            if($city->save()){
+//                echo ' OK';
+//            }
+        }else{
+            echo 'No data';
+        }
 
         $this->view->disable();
     }
 
-    public function _curlAction()
+    protected function curl($data = array())
     {
-        $baseUrl = 'http://booking.com';
-
         $provider  = Request::getProvider();
 
-        $provider->setBaseUri($baseUrl);
+        $provider->setBaseUri($data['url']);
 
-        $provider->header->set('Accept', 'application/json');
+        $provider->header->set('User-Agent', 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36');
+        $provider->header->set('Content-Type', 'text/plain; charset=utf-8');
+        $provider->header->set('Accept', '*/*');
 
-        $provider->setOption(CURLOPT_SSL_VERIFYPEER, false);
+        if(empty($data['location'])) $data['location'] = '/';
+        if(empty($data['params'])) $data['params'] = array();
 
-        $params = array();
+        $response = $provider->get($data['location'], $data['params']);
 
-        $response = $provider->get('/', $params);
-
-        echo $response->header->status;
-
-        //echo $response->body;
+        return $response;
 
     }
 }
