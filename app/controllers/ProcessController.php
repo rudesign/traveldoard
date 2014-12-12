@@ -35,8 +35,8 @@ class ProcessController extends BaseController
                 echo $cityData->hotels.'<br />';
             }
 
-            $city->setDestId($cityData->dest_id);
-            $city->setHolels($cityData->hotels);
+            $city->setDestId(($cityData->dest_id ? $cityData->dest_id : 0));
+            $city->setHolels(($cityData->hotels ? $cityData->hotels : 0));
             $city->setHTTPStatus(201);
 
             if($city->save()){
