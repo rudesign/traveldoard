@@ -2,3 +2,4 @@ app/cache
 public/files
 public/temp
 *.sql
+public/rawHotels

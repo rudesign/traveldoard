@@ -127,35 +127,41 @@ EOD;
     }
 
     public function getCityHotelsAction(){
+        $rows = 50;
 
         $cities = new Cities();
 
-        $result = $cities->query()->where('country_id = 1')->andWhere('http_status = 201')->limit(1)->execute();
+        $result = $cities->query()->where('country_id = 1')->andWhere('hotels > 0')->andWhere('shift < hotels')->limit(1)->execute();
 
         if($city = $result->getFirst()){
-            echo $city->getCityId().': '.$city->getTitleEn();
+            $shift = $city->getShift();
+
+            $shift = $shift ? $shift : 0;
+
+            echo $city->getCityId().': '.$city->getTitleEn().', shift: '.$shift;
 
             $dest_id = $city->getDestId();
 
             $bashCommand = <<<EOD
-curl -H "User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36" -H "Content-Type: text/plain; charset=utf-8" -H "Accept: */*" -H "Accept-Language: en-US,en;q=0.8,ru;q=0.6" -X GET 'http://www.booking.com/searchresults.ru.html?city={$dest_id}&lang=ru&rows=50&offset=0'
+curl -H "User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36" -H "Content-Type: text/plain; charset=utf-8" -H "Accept: */*" -H "Accept-Language: en-US,en;q=0.8,ru;q=0.6" -X GET 'http://www.booking.com/searchresults.ru.html?city={$dest_id}&lang=ru&rows={$rows}&offset={$shift}'
 EOD;
 
             $output = shell_exec($bashCommand);
 
             echo $output;
 
-            if($res = fopen($_SERVER['DOCUMENT_ROOT'].'/rawHotels/'.$city->getCityId().'.html', 'a')){
-                //fwrite($res, $output);
+            if($res = fopen($_SERVER['DOCUMENT_ROOT'].'/rawHotels/'.$city->getCityId().'_'.$shift.'_'.($shift + $rows).'.html', 'a')){
+                fwrite($res, $output);
 
                 fclose($res);
             }
 
             $city->setHTTPStatus(202);
+            $city->setShift(($shift + $rows));
 
-//            if($city->save()){
-//                echo ' OK';
-//            }
+            if($city->save()){
+                echo ' OK';
+            }
         }else{
             echo 'No data';
         }

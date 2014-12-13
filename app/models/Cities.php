@@ -71,6 +71,12 @@ class Cities extends \Phalcon\Mvc\Model
 
     protected $http_status;
 
+    protected $dest_id;
+
+    protected $hotels;
+
+    protected $shift;
+
     /**
      * Method to set the value of field city_id
      *
@@ -235,6 +241,13 @@ class Cities extends \Phalcon\Mvc\Model
         return $this;
     }
 
+    public function setShift($shift = 0)
+    {
+        $this->shift = $shift;
+
+        return $this;
+    }
+
     /**
      * Returns the value of field city_id
      *
@@ -360,6 +373,11 @@ class Cities extends \Phalcon\Mvc\Model
         return $this->hotels;
     }
 
+    public function getShift()
+    {
+        return $this->shift;
+    }
+
     /**
      * Independent Column Mapping.
      */
@@ -380,6 +398,7 @@ class Cities extends \Phalcon\Mvc\Model
             'http_status' => 'http_status',
             'dest_id' => 'dest_id',
             'hotels' => 'hotels',
+            'shift' => 'shift',
         );
     }
 
