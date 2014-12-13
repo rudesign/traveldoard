@@ -148,7 +148,7 @@ EOD;
 
             $output = shell_exec($bashCommand);
 
-            echo $output;
+            //echo $output;
 
             if($res = fopen($_SERVER['DOCUMENT_ROOT'].'/rawHotels/'.$city->getCityId().'_'.$shift.'_'.($shift + $rows).'.html', 'a')){
                 fwrite($res, $output);
