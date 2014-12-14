@@ -1,6 +1,18 @@
 <ul class="paginator clearfix">
 <?php
-    if($grid->current > 1)echo '<li>'.$this->tag->linkTo($this->router->getMatchedRoute()->getName().'/?page='.$grid->before, 'Назад').'</li>';
-    if($grid->current < $grid->total_pages) echo '<li>'.$this->tag->linkTo($this->router->getMatchedRoute()->getName().'/?page='.$grid->next, 'Вперёд').'</li>';
+    $params = $prev = $next = array();
+    if($city = $this->request->get('city')) $params[] = 'city='.$city;
+
+    $prev = $next = $params;
+
+    $prev[] = 'page='.$grid->before;
+    $next[] = 'page='.$grid->next;
+
+    $url = $this->router->getMatchedRoute()->getName().'/?';
+    $prevUrl = $url.implode('&', $prev);
+    $nextUrl = $url.implode('&', $next);
+
+    if($grid->current > 1)echo '<li>'.$this->tag->linkTo($prevUrl, 'Назад').'</li>';
+    if($grid->current < $grid->total_pages) echo '<li>'.$this->tag->linkTo($nextUrl, 'Вперёд').'</li>';
 ?>
 </ul>

@@ -2,7 +2,7 @@
     <div class="content-wrapper">
         <div class="hotels-grid clearfix">
             <div class="city-selector">
-                <?= $this->tag->form(array('hotels', 'method'=>'get')) ?>
+                <?= $this->tag->form(array('hotels/', 'method'=>'get')) ?>
 
                 <?=
                 $this->tag->select(array('city', $cities,
@@ -16,7 +16,7 @@
                 <?= $this->tag->endForm(); ?>
             </div>
 
-            <div class="small total">Всего: <b><?= $this->tag->linkTo('hotels', $grid->total_items) ?></b></div>
+            <div class="small total">Всего: <b><?= $this->tag->linkTo('hotels'.(($city = $this->request->get('city')) ? '/?city='.$city : ''), $grid->total_items) ?></b></div>
 
             <?php
             if(!empty($grid)){
