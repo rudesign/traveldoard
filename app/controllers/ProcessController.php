@@ -109,11 +109,13 @@ class ProcessController extends BaseController
                                 if($hotelIdOrig = (int)$item->attr('data-hotelid')) {
 
                                     $name = trim($a->text());
+                                    $address = trim($item->find('div.address')->text());
                                     $urlOrig = trim($a->attr('href'));
                                     $thumbUriOrig = trim($item->find('img.hotel_image')->attr('src'));
 
                                     echo $hotelIdOrig . '<br />' . PHP_EOL;
                                     echo $name . '<br />' . PHP_EOL;
+                                    echo $address . '<br />' . PHP_EOL;
                                     echo $urlOrig . '<br />' . PHP_EOL;
                                     echo $thumbUriOrig . '<br />' . PHP_EOL;
 
@@ -121,6 +123,7 @@ class ProcessController extends BaseController
 
                                     $hotels->setCityId($cityId);
                                     $hotels->setName($name);
+                                    $hotels->setAddress($address);
                                     $hotels->setHotelIdOrig($hotelIdOrig);
                                     $hotels->setUrlOrig($urlOrig);
                                     $hotels->setThumbUriOrig($thumbUriOrig);
