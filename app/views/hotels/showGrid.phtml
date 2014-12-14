@@ -16,7 +16,7 @@
                 <?= $this->tag->endForm(); ?>
             </div>
 
-            <div class="small total">Всего: <b><?= $this->tag->linkTo('hotels'.(($city = $this->request->get('city')) ? '/?city='.$city : ''), $grid->total_items) ?></b></div>
+            <div class="small total">Всего: <b><?= $this->tag->linkTo('hotels'.(($city = $this->request->get('city')) ? '/?city='.$city : ''), $grid->total_items) ?></b>, страница  <b><?= $grid->current ?></b> из <b><?= $grid->total_pages ?></b></div>
 
             <?php
             if(!empty($grid)){
