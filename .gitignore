@@ -3,3 +3,4 @@ public/files
 public/temp
 *.sql
 public/rawHotels
+.htpasswd
