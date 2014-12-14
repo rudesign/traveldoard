@@ -40,6 +40,7 @@ class HotelsController extends ViewsController
             ->innerJoin('Cities', 'Cities.city_id = Hotels.city_id')
             ->columns(array('Cities.city_id', 'Cities.title_ru'))
             //->where('Hotels.address IS NOT NULL')
+            ->where('Cities.http_status = 202')
             ->orderBy('Cities.title_ru ASC')
             ->groupBy('Cities.city_id');
 
