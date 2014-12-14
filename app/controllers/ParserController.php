@@ -27,8 +27,7 @@ class ParserController extends BaseController
 
         $cities = new Cities();
 
-        //$result = $cities->query()->where('country_id = 1')->andWhere('http_status IS NULL')->limit(1)->execute();
-        $result = $cities->query()->where('country_id = 1')->andWhere('city_id = 1048066')->limit(1)->execute();
+        $result = $cities->query()->where('country_id = 1')->andWhere('http_status IS NULL')->limit(1)->execute();
 
         if($city = $result->getFirst()){
             echo $city->getCityId().': '.$city->getTitleEn();
