@@ -1,0 +1,6 @@
+<ul class="paginator clearfix">
+<?php
+    if($grid->current > 1)echo '<li>'.$this->tag->linkTo($this->router->getMatchedRoute()->getName().'/?page='.$grid->before, 'Назад').'</li>';
+    if($grid->current < $grid->total_pages) echo '<li>'.$this->tag->linkTo($this->router->getMatchedRoute()->getName().'/?page='.$grid->next, 'Вперёд').'</li>';
+?>
+</ul>

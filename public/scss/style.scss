@@ -1,0 +1,70 @@
+@import "reset";
+@import "clearfix";
+@import "vars";
+@import "mixins";
+@import "forms";
+@import "responsive";
+
+.left{
+  float: left;
+}
+.right{
+  float: right;
+}
+
+.table{
+  display: table;
+  .tr{
+    display: table-row;
+    .td{
+      display: table-cell;
+      &.mid{
+        vertical-align: middle;
+      }
+    }
+  }
+}
+
+.fitted{
+  width: 100%;
+  img{
+    max-width: 100%;
+  }
+}
+
+.small{
+  font-size: 12px;
+  line-height: 1.3em;
+}
+
+strong, b, .bold{
+  font-weight: 400;
+}
+
+.extra-bold{
+  font-weight: 500;
+}
+
+body {
+  @extend .font-classic;
+  background-color: #fff;
+}
+
+.header{
+  padding: $leading1 0;
+  .logo{
+    float: left;
+  }
+  .user-controls{
+    float: right;
+  }
+}
+
+.content-wrapper{
+  width: $contentWidth;
+  margin: 0 auto;
+}
+
+.footer{
+  padding: $leading1 0;
+}

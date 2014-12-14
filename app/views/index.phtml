@@ -1,11 +1,26 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Hello Booking.com</title>
-        <script src="/js/jquery-1.11.1.min.js" language="javascript" type="text/javascript"></script>
-        <script src="/js/parser.js" language="javascript" type="text/javascript"></script>
-	</head>
-	<body>
-		<?= $this->getContent() ?>
-	</body>
+<head>
+	<?= $this->tag->getTitle() ?>
+	<?= $this->tag->tagHtml('meta', array('name'=>'description', 'content'=>(!empty($metaTags['description']) ? $metaTags['description'] : '')), true, false, true) ?>
+	<?= $this->tag->tagHtml('meta', array('name'=>'keywords', 'content'=>(!empty($metaTags['keywords']) ? $metaTags['keywords'] : '')), true, false, true) ?>
+	<?= $this->tag->tagHtml('meta', array('name'=>'viewport', 'content'=>'width=device-width, initial-scale=1.0'), true, false, true) ?>
+	<?= $this->assets->outputCss('cssBefore') ?>
+	<?= $this->assets->outputJs('jsBefore') ?>
+</head>
+<body>
+<div class="root">
+	<?= $this->partial('notification') ?>
+
+	<?= $this->partial('header') ?>
+
+	<?= $this->partial('menu') ?>
+
+	<?= $this->getContent() ?>
+
+	<?= $this->partial('footer') ?>
+</div>
+<?= $this->assets->outputCss('cssAfter') ?>
+<?= $this->assets->outputJs('jsAfter') ?>
+</body>
 </html>

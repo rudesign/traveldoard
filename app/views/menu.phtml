@@ -1,0 +1,22 @@
+<div class="menu">
+    <div class="content-wrapper">
+        <?php
+        if($menu = $this->config->get('menu')) {
+
+            $default = $this->router-> getDefaultController();
+            $current = $this->router->getControllerName();
+
+            echo '<ul>';
+
+            foreach($menu as $location=>$name) {
+
+                $active = $location == $current ? 'active' : null;
+                if($location == $default) unset($location);
+                echo '<li>'.$this->tag->linkTo(array($location, $name, 'class'=>$active)).'</li>';
+            }
+
+            echo '</ul>';
+        }
+        ?>
+    </div>
+</div>

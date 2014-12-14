@@ -1,0 +1,11 @@
+<?php
+if(!empty($notify['message'])){
+   echo '
+   <div class="'.($notify['type'] ? $notify['type'].' ' : '').'notification">
+        <div class="content-wrapper">
+            <div class="p-wrapper-1-reverse r l clearfix">
+                <span>'.$notify['message'].'</span> <a class="close" href="javascript:void(0);"></a>
+            </div>
+        </div>
+    </div>';
+}

@@ -1,0 +1,49 @@
+$contentWidth: 1000px;
+
+$leading: 15px;
+$leading1: 30px;
+$leading2: 45px;
+
+// Colours
+
+$white: white;
+$black: #333;
+$gray: #ccc;
+$a: #0857a6;
+$blue: #00adee;
+$green: #abc600;
+
+//@import url(http://fonts.googleapis.com/css?family=Roboto:300,500&subset=latin,cyrillic);
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  src: url(../css/fonts/roboto300.woff) format('woff');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: url(../css/fonts/roboto400.woff) format('woff');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: url(../css/fonts/roboto500.woff) format('woff');
+}
+
+.font{
+  &-classic {
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    line-height: 1.4em;
+    font-weight: 300;
+    color: $black;
+  }
+  &-small{
+    font-size: 12px;
+    line-height: 1.4em;
+  }
+}

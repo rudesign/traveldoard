@@ -1,0 +1,14 @@
+<div class="content">
+    <div class="content-wrapper clearfix">
+    <?php
+    if(!empty($grid)){
+        foreach($grid->items as $item){
+            $this->partial('hotels/gridItem');
+        }
+    }
+    ?>
+
+    <?= $this->partial('paginator') ?>
+
+    </div>
+</div>

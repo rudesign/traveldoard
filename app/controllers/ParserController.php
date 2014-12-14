@@ -138,7 +138,7 @@ EOD;
 
             $shift = $shift ? $shift : 0;
 
-            echo $city->getCityId().': '.$city->getTitleEn().', shift: '.$shift;
+            echo $city->getCityId().': '.$city->getTitleEn().', shift: '.$shift.'<br />' . PHP_EOL;
 
             $dest_id = $city->getDestId();
 
@@ -150,10 +150,15 @@ EOD;
 
             //echo $output;
 
-            if($res = fopen($_SERVER['DOCUMENT_ROOT'].'/rawHotels/'.$city->getCityId().'_'.$shift.'_'.($shift + $rows).'.html', 'a')){
+            $fname = $_SERVER['DOCUMENT_ROOT'].'/rawHotels/'.$city->getCityId().'_'.$shift.'_'.($shift + $rows).'.html';
+
+            if($res = fopen($fname, 'a')){
                 fwrite($res, $output);
 
                 fclose($res);
+            }else {
+                echo 'Cant open file '.$fname.' for writing'.'<br />' . PHP_EOL;
+                exit;
             }
 
             $city->setHTTPStatus(202);

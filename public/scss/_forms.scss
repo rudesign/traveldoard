@@ -1,0 +1,82 @@
+input, textarea, select, button{
+  $boxSizing: border-box;
+  box-sizing: $boxSizing;
+  -moz-box-sizing: $boxSizing;
+  -webkit-box-sizing: $boxSizing;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="textarea"],
+textarea{
+  @extend .font-classic;
+  font-size: 16px;
+  padding: 5px 10px 6px;
+  border: 1px solid $gray;
+  border-top-width: 2px;
+}
+
+input[type="radio"],
+input[type="checkbox"]{
+  position: relative;
+  top: 0.15em;
+  margin: 0;
+}
+
+label{
+  margin: 0 1em 0 0.2em;
+}
+
+.buttons{
+  display: block;
+  padding: 0.7em 2em 0.7em;
+  font:{
+    size: 14px;
+    weight: 300;
+  }
+  line-height: 1.2em;
+  text-decoration: none;
+  text-align: center;
+  text-transform: uppercase;
+  background-color: $green;
+  border: none;
+  border-bottom: 1px solid darken($green, 6%);
+  color: $white;
+  transition: 0.2s;
+  cursor: pointer;
+  a{
+    text-decoration: none;
+    color: #ffffff;
+  }
+  &:hover{
+    background-color: darken($green, 3%);
+    border-bottom-color: darken($green, 10%);
+  }
+  &.gray{
+    background-color: darken($gray, 10%);
+    border-bottom: 1px solid darken($gray, 20%);
+    &:hover{
+      background-color: darken($gray, 5%);
+      border-bottom-color: darken($gray, 15%);
+    }
+  }
+  i{
+    color: $white;
+  }
+}
+
+.forms{
+  .row{
+    margin-bottom: 15px;
+  }
+  .title{
+    margin-bottom: 3px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.3em;
+  }
+  .hidden{
+    display: none;
+  }
+}

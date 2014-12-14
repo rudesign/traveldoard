@@ -1,0 +1,13 @@
+<ul class="user-controls">
+<?php
+
+if(!$this->session->has('sid')){
+    echo '
+    <li>'.$this->tag->linkTo(array('login', 'Вход', 'class'=>'login')).'</li>
+    <li>'.$this->tag->linkTo('signup', 'Регистрация').'</li>';
+}else{
+    echo '
+    <li>'.$this->tag->linkTo('logout', 'Выход').'</li>';
+}
+?>
+</ul>
