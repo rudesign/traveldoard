@@ -1,3 +1,7 @@
+AuthName "Restricted Area"
+AuthType Basic
+require valid-user
+
 <IfModule mod_rewrite.c>
 	RewriteEngine on
 	RewriteRule  ^$ public/    [L]
