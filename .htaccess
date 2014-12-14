@@ -1,6 +1,9 @@
-AuthName "Restricted Area"
 AuthType Basic
-require valid-user
+AuthName "Access is Denied. Enter password"
+AuthUserFile /var/www/.htpasswd
+<Limit GET POST>
+Require user admin
+</Limit>
 
 <IfModule mod_rewrite.c>
 	RewriteEngine on
