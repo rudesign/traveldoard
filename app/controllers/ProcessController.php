@@ -89,11 +89,20 @@ class ProcessController extends BaseController
                         $cityId = 0;
                         if ($rawEntry = explode('_', $entry)) $cityId = (int) reset($rawEntry);
 
+                        // get city hotels count
+                        $hotels = new Cities();
+                        $city = $hotels->query()->where('city_id='.$cityId)->columns('hotels')->execute()->getFirst();
+                        // get stored city hotels count
+                        $hotels = new Hotels();
+                        $hotelsCount = $hotels->query()->where('city_id='.$cityId)->columns('COUNT(*) as count')->execute()->getFirst();
+                        echo 'Stored '.$hotelsCount->count.' from '.$city->hotels.'<br /><br />' . PHP_EOL;
+
                         $qp = htmlqp($fname, '.nodates_hotels');
 
                         if($qp->count()){
                             $i = 0;
-                            while (($i < $itemsLimit) && $item = $qp->find('.sr_item.sr_item_no_dates')->eq($i)) {
+                            $s = $hotelsCount->count;
+                            while (($i < $itemsLimit) && ($s < $city->hotels) && $item = $qp->find('.sr_item.sr_item_no_dates')->eq($i)) {
 
                                 $a = $item->find('h3 a')->eq(0);
 
@@ -133,6 +142,7 @@ class ProcessController extends BaseController
                                 }
 
                                 $i++;
+                                $s++;
                             }
                         } else echo 'No hotels grid<br />' . PHP_EOL;
 

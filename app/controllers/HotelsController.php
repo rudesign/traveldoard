@@ -11,7 +11,7 @@ class HotelsController extends ViewsController
     {
         $builder = $this->modelsManager->createBuilder()
             ->from('Hotels')
-            ->where('city_id=1')
+            ->where('city_id=21')
             ->orderBy('name ASC');
 
         $paginator = new PAdapter(
