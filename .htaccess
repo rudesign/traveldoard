@@ -1,9 +1,9 @@
-AuthType Basic
-AuthName "Access is Denied. Enter password"
-AuthUserFile /var/www/.htpasswd
-<Limit GET POST>
-Require user admin
-</Limit>
+#AuthType Basic
+#AuthName "Access is Denied. Enter password"
+#AuthUserFile /var/www/.htpasswd
+#<Limit GET POST>
+#Require user admin
+#</Limit>
 
 <IfModule mod_rewrite.c>
 	RewriteEngine on

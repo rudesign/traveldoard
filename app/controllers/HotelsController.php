@@ -31,10 +31,6 @@ class HotelsController extends ViewsController
         $this->view->setVar('grid', $grid);
 
         // get cities
-        /*
-         * SELECT cities.city_id, cities.title_ru FROM travelboard.hotels INNER JOIN cities ON cities.city_id = hotels.city_id GROUP BY city_id;
-         * */
-
         $builder = $this->modelsManager->createBuilder()
             ->from('Hotels')
             ->innerJoin('Cities', 'Cities.city_id = Hotels.city_id')
