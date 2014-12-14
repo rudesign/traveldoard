@@ -16,7 +16,7 @@
                 <?= $this->tag->endForm(); ?>
             </div>
 
-            <div class="small total">Всего: <b><?= $this->tag->linkTo('hotels', $grid->total_items, false) ?></b></div>
+            <div class="small total">Всего: <b><?= $this->tag->linkTo('hotels', $grid->total_items) ?></b></div>
 
             <?php
             if(!empty($grid)){
