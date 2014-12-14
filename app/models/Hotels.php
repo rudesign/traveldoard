@@ -41,6 +41,11 @@ class Hotels extends \Phalcon\Mvc\Model
      */
     protected $thumb_uri_orig;
 
+    public function initialize()
+    {
+        $this->hasOne("city_id", "Cities", "city_id");
+    }
+
     /**
      * Method to set the value of field hotel_id
      *

@@ -77,6 +77,11 @@ class Cities extends \Phalcon\Mvc\Model
 
     protected $shift;
 
+    public function initialize()
+    {
+        $this->hasMany("city_id", "Hotels", "city_id");
+    }
+
     /**
      * Method to set the value of field city_id
      *

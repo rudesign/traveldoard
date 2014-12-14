@@ -1,14 +1,32 @@
 <div class="content">
-    <div class="content-wrapper clearfix">
-    <?php
-    if(!empty($grid)){
-        foreach($grid->items as $item){
-            $this->partial('hotels/gridItem');
-        }
-    }
-    ?>
+    <div class="content-wrapper">
+        <div class="hotels-grid clearfix">
+            <div class="city-selector">
+                <?= $this->tag->form(array('hotels', 'method'=>'get')) ?>
 
-    <?= $this->partial('paginator') ?>
+                <?=
+                $this->tag->select(array('city', $cities,
+                    "using" => array("city_id", "title_ru"),
+                    "useEmpty" => true,
+                    'emptyText' => 'выберите город...',
+                    'emptyValue' => '0',
+                    'onchange'=>'this.form.submit();',
+                )) ?>
 
+                <?= $this->tag->endForm(); ?>
+            </div>
+
+            <div class="small total">Всего: <b><?= $this->tag->linkTo('hotels', $grid->total_items, false) ?></b></div>
+
+            <?php
+            if(!empty($grid)){
+                foreach($grid->items as $item){
+                    $this->partial('hotels/gridItem');
+                }
+            }
+            ?>
+            </div>
+
+            <?= $this->partial('paginator') ?>
     </div>
 </div>

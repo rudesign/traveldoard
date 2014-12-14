@@ -45,6 +45,16 @@ strong, b, .bold{
   font-weight: 500;
 }
 
+.paginator{
+  li{
+    display: inline-block;
+    float: left;
+    &:first-child{
+      margin-right: 5px;
+    }
+  }
+}
+
 body {
   @extend .font-classic;
   background-color: #fff;
@@ -63,6 +73,22 @@ body {
 .content-wrapper{
   width: $contentWidth;
   margin: 0 auto;
+}
+
+.hotels-grid{
+  margin-bottom: $leading;
+  .city-selector{
+    margin-bottom: $leading1;
+  }
+  .total{
+    margin-bottom: $leading;
+  }
+  .items {
+    margin-bottom: 5px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 }
 
 .footer{

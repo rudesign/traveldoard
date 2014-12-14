@@ -1,10 +1,13 @@
 <div class="items">
     <div class="wrapper clearfix">
+        <div>
         <?php
             echo $this->tag->linkTo(array('http://booking.com'.$item->getUrlOrig(), $item->getName(),
                 'local' =>FALSE,
                 'target'=>'_blank'
             ));
         ?>
+        </div>
+        <div class="small"><?= $item->cities->getTitleRu() ?></div>
     </div>
 </div>
