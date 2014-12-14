@@ -18,7 +18,7 @@ class HotelsController extends ViewsController
         $paginator = new PAdapter(
             array(
                 "builder" => $builder,
-                "limit"=> 30,
+                "limit"=> 25,
                 "page" => $this->request->get('page')
             )
         );
