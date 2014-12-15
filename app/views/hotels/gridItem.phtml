@@ -2,12 +2,12 @@
     <div class="wrapper clearfix">
         <div>
         <?php
-            echo $this->tag->linkTo(array('http://booking.com'.$item->getUrlOrig(), $item->getName(),
+            echo $this->tag->linkTo(array('http://booking.com'.$item->hotels->getUrlOrig(), $item->hotels->getName(),
                 'local' =>FALSE,
                 'target'=>'_blank'
             ));
         ?>
         </div>
-        <div class="small"><?= $item->cities->getTitleRu() ?></div>
+        <div class="small"><?= $item->city_name.', '.$item->region_name ?></div>
     </div>
 </div>

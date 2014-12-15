@@ -79,6 +79,7 @@ class Cities extends \Phalcon\Mvc\Model
 
     public function initialize()
     {
+        $this->hasOne("region_id", "Regions", "region_id");
         $this->hasMany("city_id", "Hotels", "city_id");
     }
 

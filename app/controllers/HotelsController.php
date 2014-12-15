@@ -11,7 +11,14 @@ class HotelsController extends ViewsController
     {
         $builder = $this->modelsManager->createBuilder()
             ->from('Hotels')
-            ->orderBy('name ASC');
+            ->join('Cities', 'Cities.city_id = Hotels.city_id')
+            ->join('Regions', 'Regions.region_id = Cities.region_id')
+            ->columns(array(
+                'Hotels.*',
+                'Cities.title_ru AS city_name',
+                'Regions.title_ru AS region_name',
+                ))
+            ->orderBy('Hotels.name ASC');
 
         if($selectedCityId = $this->request->get('city')) $builder->where('city_id='.$selectedCityId);
 
