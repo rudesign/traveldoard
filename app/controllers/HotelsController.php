@@ -11,8 +11,8 @@ class HotelsController extends ViewsController
     {
         $builder = $this->modelsManager->createBuilder()
             ->from('Hotels')
-            ->join('Cities', 'Cities.city_id = Hotels.city_id')
-            ->join('Regions', 'Regions.region_id = Cities.region_id')
+            ->innerJoin('Cities', 'Cities.city_id = Hotels.city_id')
+            ->leftJoin('Regions', 'Regions.region_id = Cities.region_id')
             ->columns(array(
                 'Hotels.*',
                 'Cities.title_ru AS city_name',
