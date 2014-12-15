@@ -20,7 +20,7 @@ class HotelsController extends ViewsController
                 ))
             ->orderBy('Hotels.name ASC');
 
-        if($selectedCityId = $this->request->get('city')) $builder->where('city_id='.$selectedCityId);
+        if($selectedCityId = $this->request->get('city')) $builder->where('Hotels.city_id='.$selectedCityId);
 
         $paginator = new PAdapter(
             array(
