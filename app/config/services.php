@@ -4,7 +4,7 @@ use Phalcon\DI\FactoryDefault;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
-use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
+use Phalcon\Session\Adapter\Memcache as Memcache;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
 
@@ -51,6 +51,21 @@ $di->set('db', function () use ($config) {
         'dbname' => $config->database->dbname,
         'charset' => 'utf8',
     ));
+});
+
+// Cache
+$di->set('cache', function() {
+    // lifetime in secs
+    $frontCache = new \Phalcon\Cache\Frontend\Data(array(
+        "lifetime" => 1200
+    ));
+    // memcached settings
+    $cache = new \Phalcon\Cache\Backend\Memcache($frontCache, array(
+        "host" => "localhost",
+        "port" => "11211"
+    ));
+
+    return $cache;
 });
 
 // View
