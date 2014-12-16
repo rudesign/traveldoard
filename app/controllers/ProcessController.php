@@ -9,6 +9,7 @@ class ProcessController extends BaseController
         parent::initialize();
     }
 
+    // 201: city JSON is processed
     public function getCityJSONAction()
     {
 

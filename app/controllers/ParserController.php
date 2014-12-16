@@ -23,11 +23,12 @@ class ParserController extends BaseController
         }
     }
 
+    // 200: city JSON is catched from origin
     public function getCityJSONAction(){
 
         $cities = new Cities();
 
-        $result = $cities->query()->where('country_id = 1')->andWhere('http_status IS NULL')->limit(1)->execute();
+        $result = $cities->query()->where('country_id = 1')->andWhere('http_status IS NULL')->order('important DESC')->limit(1)->execute();
 
         if($city = $result->getFirst()){
             echo $city->getCityId().': '.$city->getTitleEn();
@@ -129,6 +130,7 @@ EOD;
         }
     }
 
+    // 202: hotels count > 0
     public function getCityHotelsAction(){
         $rows = 50;
 
