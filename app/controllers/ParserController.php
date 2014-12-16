@@ -26,23 +26,27 @@ class ParserController extends BaseController
     // 200: city JSON is catched from origin
     public function getCityJSONAction(){
 
-        $cities = new Cities();
+        for($i=0;$i<4;$i++) {
+            $cities = new Cities();
 
-        $result = $cities->query()->where('country_id = 1')->andWhere('http_status IS NULL')->order('important DESC')->limit(1)->execute();
+            $result = $cities->query()->where('country_id = 1')->andWhere('http_status IS NULL')->order('important DESC')->limit(1)->execute();
 
-        if($city = $result->getFirst()){
-            echo $city->getCityId().': '.$city->getTitleEn();
+            if ($city = $result->getFirst()) {
+                echo $city->getCityId() . ': ' . $city->getTitleEn();
 
-            $jsonStr = $this->getLocationJSON($city->getTitleRu(), $city->getRegionRu(), 'Россия');
+                $jsonStr = $this->getLocationJSON($city->getTitleRu(), $city->getRegionRu(), 'Россия');
 
-            $city->setJson($jsonStr);
-            $city->setHTTPStatus(200);
+                $city->setJson($jsonStr);
+                $city->setHTTPStatus(200);
 
-            if($city->save()){
-                echo ' OK';
+                if ($city->save()) {
+                    echo ' OK';
+                }
+            } else {
+                echo 'No data';
             }
-        }else{
-            echo 'No data';
+
+            echo '<br /><br />' . PHP_EOL;
         }
 
         $this->view->disable();
