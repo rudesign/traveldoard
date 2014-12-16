@@ -13,45 +13,49 @@ class ProcessController extends BaseController
     public function getCityJSONAction()
     {
 
-        $cities = new Cities();
+        for($i=0;$i<5;$i++) {
 
-        $result = $cities->query()->where('country_id = 1')->andWhere('json IS NOT NULL')->andWhere('http_status = 200')->limit(1)->execute();
+            $cities = new Cities();
 
-        if($city = $result->getFirst()){
-            echo $city->getCityId().': '.$city->getTitleEn().'<br />' . PHP_EOL;
+            $result = $cities->query()->where('country_id = 1')->andWhere('json IS NOT NULL')->andWhere('http_status = 200')->limit(1)->execute();
 
-            $json = $city->getJson();
+            if ($city = $result->getFirst()) {
+                echo $city->getCityId() . ': ' . $city->getTitleEn() . '<br />' . PHP_EOL;
 
-            $json = json_decode($json);
+                $json = $city->getJson();
 
-            if(!empty($json->city)){
+                $json = json_decode($json);
 
-                $cityData = new stdClass();
+                if (!empty($json->city)) {
 
-                foreach($json->city as $cityData){
-                    if($cityData->type == 'ci') {
-                        break;
+                    $cityData = new stdClass();
+
+                    foreach ($json->city as $cityData) {
+                        if ($cityData->type == 'ci') {
+                            break;
+                        }
                     }
+
+                    // dest_id
+                    echo $cityData->dest_id . '<br />';
+                    // hotels count
+                    echo $cityData->hotels . '<br />';
                 }
 
-                // dest_id
-                echo $cityData->dest_id.'<br />';
-                // hotels count
-                echo $cityData->hotels.'<br />';
+                $city->setDestId((!empty($cityData->dest_id) ? $cityData->dest_id : 0));
+                $city->setHolels((!empty($cityData->hotels) ? $cityData->hotels : 0));
+                $city->setHTTPStatus(201);
+
+                if ($city->save()) {
+                    echo ' OK';
+                }
+
+            } else {
+                echo 'No data';
             }
 
-            $city->setDestId((!empty($cityData->dest_id) ? $cityData->dest_id : 0));
-            $city->setHolels((!empty($cityData->hotels) ? $cityData->hotels : 0));
-            $city->setHTTPStatus(201);
-
-            if($city->save()){
-                echo ' OK';
-            }
-
-        }else{
-            echo 'No data';
+            echo '<br /><br />' . PHP_EOL;
         }
-
 
         $this->view->disable();
     }
