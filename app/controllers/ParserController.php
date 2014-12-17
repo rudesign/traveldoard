@@ -63,9 +63,9 @@ class ParserController extends BaseController
     // -H "Cookie: utag_main=v_id:0149e65771d7001ecb26216f6ca605066003705e00bd0$_sn:1$_ss:1$_pn:1%3Bexp-session$_st:1416910530839$ses_id:1416908730839%3Bexp-session; zz_cook_segment=1; _ga=GA1.2.272112262.1416908731; __utma=1.272112262.1416908731.1416908731.1416908731.1; __utmc=1; __utmz=1.1416908731.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); bkng=11UmFuZG9tSVYkc2RlIyh9YWJdm48m5cJDWuLLIYaigN7j6j48cUdQU8ks0%2Fk62aC%2BxdDf7fqoRnTtnrQ7rtxNgi9Nffvg1Sj17HjkVCAzuJbqR8QXty4azG%2BIzhFHqNRBFT1J1B8B%2FYIgcqxushhAUAh2A4WabiSsfZRFPR2tf2qTMKNI0dulkCB53sH2MK8L149VfRyORNE%3D"
     // -X GET 'http://booking.com/autocomplete?lang=ru&pid=6b1c422f5a320072&sid=02da8e0f4b98680e70edc35ac6b45492&aid=304142&stype=1&force_ufi=&cities_first=1&should_split=1&sugv=br&e_acb1=1&e_acb2=1&eb=0&add_themes=1&themes_match_start=0&include_synonyms=1&e_nr_labels=1&e_obj_labels=1&exclude_some_hotels=1&include_dest_count=1&max_results=10&include_extra_synonyms=0&term=Italy'
 
-    private function getLocationJSON($location = '', $region = '', $country = ''){
+    private function getLocationJSON($slocation = '', $region = '', $country = ''){
 
-        $location = empty($location) ? $this->request->get('location') : $location;
+        $location = empty($slocation) ? $this->request->get('location') : $slocation;
         if(!empty($region)) $location .= ' '.$region;
         if(!empty($country)) $location .= ' '.$country;
 
@@ -84,7 +84,7 @@ EOD;
         if(!empty($outputJSON->city)){
             return $output;
         }else{
-            $location = empty($location) ? $this->request->get('location') : $location;
+            $location = empty($slocation) ? $this->request->get('location') : $slocation;
             if(!empty($country)) $location .= ' '.$country;
 
             $bashCommand = <<<EOD
