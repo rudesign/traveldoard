@@ -23,6 +23,9 @@ class TestController extends BaseController
 
             $result = $cities->query()->where('country_id = 1')->andWhere('http_status IS NULL')->limit(1)->execute();
 
+            echo $result->getFirst()->query()->getConditions();
+            die;
+
             if ($city = $result->getFirst()) {
                 echo $city->getCityId() . ': ' . $city->getTitleEn();
 
