@@ -23,7 +23,7 @@ class TestController extends BaseController
 
             $result = $cities->query()->where('country_id = 1')->andWhere('http_status IS NULL')->limit(1);
 
-            echo '-'.$result->getFirst()->query()->getConditions();
+            echo '-'.$result->getConditions();
             die;
 
             if ($city = $result->getFirst()) {
