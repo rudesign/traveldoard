@@ -66,7 +66,7 @@ class ParserController extends BaseController
     private function getLocationJSON($location = '', $region = '', $country = ''){
 
         $location = empty($location) ? $this->request->get('location') : $location;
-        //if(!empty($region)) $location .= ' '.$region;
+        if(!empty($region)) $location .= ' '.$region;
         if(!empty($country)) $location .= ' '.$country;
 
         $location = urlencode($location);
@@ -77,13 +77,25 @@ EOD;
 
         $output = shell_exec($bashCommand);
 
-        return $output;
+        $outputJSON = json_decode($output);
 
-        $output = json_decode($output);
+        if(!empty($outputJSON->city)){
+            return $output;
+        }else{
+            $location = empty($location) ? $this->request->get('location') : $location;
+            if(!empty($country)) $location .= ' '.$country;
+
+            $bashCommand = <<<EOD
+curl -H "User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36" -H "Content-Type: text/plain; charset=utf-8" -H "Accept: application/json" -H "Accept-Encoding: gzip, deflate, sdch" -H "Accept-Language: en-US,en;q=0.8,ru;q=0.6" -X GET 'http://booking.com/autocomplete?lang=ru&pid=6b1c422f5a320072&sid=02da8e0f4b98680e70edc35ac6b45492&aid=304142&stype=1&force_ufi=&cities_first=1&should_split=1&sugv=br&e_acb1=1&e_acb2=1&eb=0&add_themes=1&themes_match_start=0&include_synonyms=1&e_nr_labels=1&e_obj_labels=1&exclude_some_hotels=1&include_dest_count=1&max_results=10&include_extra_synonyms=0&term=$location'
+EOD;
+            return shell_exec($bashCommand);
+        }
 
         $stdOut = array();
 
-        if(!empty($output->city)){
+        if(!empty($outputJSON->city)){
+
+
             foreach($output->city as $set){
                 /*
                 [cc1] => ru
