@@ -65,6 +65,7 @@ class ProcessController extends BaseController
         try {
 
             $itemsLimit = 50;
+            echo 1;
 
             // QueryParser location
             $lPath = $this->config->application->libraryDir . 'querypath/src/qp.php';
