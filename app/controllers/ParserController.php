@@ -41,9 +41,9 @@ class ParserController extends BaseController
                 $city->setJson($jsonStr);
                 $city->setHTTPStatus(200);
 
-//                if ($city->save()) {
-//                    echo ' OK';
-//                }
+                if ($city->save()) {
+                    echo ' OK';
+                }
             } else {
                 echo 'No data';
             }
