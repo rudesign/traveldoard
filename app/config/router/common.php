@@ -13,9 +13,9 @@ $router->setDefaultAction('index');
 // Index page
 $router->add('/');
 
-$router->add('/test', array(
+$router->add('/test/:action', array(
     'controller' => 'test',
-    'action' => 'test',
+    'action' => 1,
 ));
 
 // Users + People group
