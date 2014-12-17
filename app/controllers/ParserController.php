@@ -26,7 +26,7 @@ class ParserController extends BaseController
     // 200: city JSON is catched from origin
     public function getCityJSONAction(){
 
-        for($i=0;$i<1;$i++) {
+        for($i=0;$i<5;$i++) {
             $cities = new Cities();
 
             $result = $cities->query()->where('country_id = 1')->andWhere('http_status IS NULL')->orderBy('city_id')->limit(1)->execute();
