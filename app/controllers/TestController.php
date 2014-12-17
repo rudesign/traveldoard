@@ -21,10 +21,7 @@ class TestController extends BaseController
         for($i=0;$i<1;$i++) {
             $cities = new Cities();
 
-            $result = $cities->query()->where('country_id = 1')->andWhere('http_status IS NULL')->limit(1);
-
-            echo '-'.$result->getConditions();
-            die;
+            $result = $cities->query()->where('country_id = 1')->andWhere('http_status IS NULL')->orderBy('city_id')->limit(1)->execute();
 
             if ($city = $result->getFirst()) {
                 echo $city->getCityId() . ': ' . $city->getTitleEn();
