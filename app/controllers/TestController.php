@@ -47,7 +47,7 @@ class TestController extends BaseController
     private function getLocationJSON($location = '', $region = '', $country = ''){
 
         $location = empty($location) ? $this->request->get('location') : $location;
-        if(!empty($region)) $location .= ' '.$region;
+        //if(!empty($region)) $location .= ' '.$region;
         if(!empty($country)) $location .= ' '.$country;
 
         $location = urlencode($location);
@@ -58,8 +58,6 @@ EOD;
 
         $output = shell_exec($bashCommand);
 
-        echo urldecode($bashCommand);
-        die;
         //return $output;
 
         $output = json_decode($output);
