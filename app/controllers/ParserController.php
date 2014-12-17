@@ -26,7 +26,7 @@ class ParserController extends BaseController
     // 200: city JSON is catched from origin
     public function getCityJSONAction(){
 
-        for($i=0;$i<5;$i++) {
+        for($i=0;$i<1;$i++) {
             $cities = new Cities();
 
             $result = $cities->query()->where('country_id = 1')->andWhere('http_status IS NULL')->order('important DESC')->limit(1)->execute();
@@ -74,6 +74,8 @@ curl -H "User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, li
 EOD;
 
         $output = shell_exec($bashCommand);
+
+        echo $output;
 
         return $output;
 
