@@ -13,6 +13,11 @@ $router->setDefaultAction('index');
 // Index page
 $router->add('/');
 
+$router->add('/test', array(
+    'controller' => 'test',
+    'action' => 'test',
+));
+
 // Users + People group
 include __DIR__ . '/users.php';
 
