@@ -11,7 +11,13 @@ class TestController extends BaseController
     public function testAction()
     {
         //var_dump(shell_exec('/usr/bin/curl -I ya.ru 2>&1'));
-        var_dump($o = shell_exec("whoali"));
+        //var_dump($o = shell_exec("whoali"));
+
+
+        echo "exec returned: " . exec('whoami > /dev/null', $result, $rcode) . '<br />';
+        echo '<pre>' . print_r($result, true) . '</pre>';
+        echo "Return Code: $rcode<br />";
+        die;
 
         $this->view->disable();
     }
