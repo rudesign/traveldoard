@@ -21,11 +21,11 @@ $router->add('/test/:action', array(
 // Users + People group
 include __DIR__ . '/users.php';
 
-//include __DIR__ . '/parser.php';
+include __DIR__ . '/parser.php';
 
-//include __DIR__ . '/process.php';
+include __DIR__ . '/process.php';
 
-//include __DIR__ . '/hotels.php';
+include __DIR__ . '/hotels.php';
 
 // Not found
 $router->notFound(array(
