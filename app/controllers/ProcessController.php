@@ -13,7 +13,7 @@ class ProcessController extends BaseController
     public function getCityJSONAction()
     {
 
-        for($i=0;$i<5;$i++) {
+        for($i=0;$i<3;$i++) {
 
             $cities = new Cities();
 
