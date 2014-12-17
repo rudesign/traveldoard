@@ -10,7 +10,7 @@ class TestController extends BaseController
 
     public function testAction()
     {
-        echo shell_exec('/usr/bin/curl -I ya.ru');
+        echo '-'.shell_exec('/usr/bin/curl -I ya.ru');
 
         $this->view->disable();
     }
