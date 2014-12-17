@@ -36,7 +36,7 @@ class HotelsController extends ViewsController
         $grid = $paginator->getPaginate();
 
         // caching
-        /*
+        
         $queryToCache = $paginator->getQueryBuilder()->getPhql().' '.$paginator->getCurrentPage();
         $cacheKey = md5($queryToCache);
 
@@ -44,7 +44,6 @@ class HotelsController extends ViewsController
             $grid = $paginator->getPaginate();
             $this->cache->save($cacheKey, $grid);
         }
-        */
 
         $this->view->setVar('grid', $grid);
 
