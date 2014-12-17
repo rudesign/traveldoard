@@ -69,9 +69,9 @@ class ProcessController extends BaseController
 
             // QueryParser location
             $lPath = $this->config->application->libraryDir . 'querypath/src/qp.php';
-            echo 1;
+
             require $lPath;
-            echo 1;
+
             if(!function_exists('qp')) throw new PException('No parser');
 
             // dir to look through
