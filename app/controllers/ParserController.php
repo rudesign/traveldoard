@@ -29,7 +29,7 @@ class ParserController extends BaseController
         for($i=0;$i<1;$i++) {
             $cities = new Cities();
 
-            $result = $cities->query()->where('country_id = 1')->andWhere('http_status IS NULL')->order('important DESC')->limit(1)->execute();
+            $result = $cities->query()->where('country_id = 1')->andWhere('http_status IS NULL')->limit(1)->execute();
 
             if ($city = $result->getFirst()) {
                 echo $city->getCityId() . ': ' . $city->getTitleEn();
