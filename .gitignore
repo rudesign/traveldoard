@@ -4,3 +4,4 @@ public/temp
 *.sql
 public/rawHotels
 .htpasswd
+public/i.php
