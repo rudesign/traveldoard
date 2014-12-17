@@ -26,7 +26,7 @@ class ProcessController extends BaseController
 
                 $json = json_decode($json);
 
-                if (!empty($json->city)) {
+                if (!empty($json->city) && empty($json->__did_you_mean__)) {
 
                     $cityData = new stdClass();
 
