@@ -60,7 +60,7 @@ EOD;
 
         $output = shell_exec($bashCommand);
 
-        echo $output;
+        //echo $output;
 
         return $output;
 
