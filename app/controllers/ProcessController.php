@@ -77,7 +77,7 @@ class ProcessController extends BaseController
             // dir to look through
             $path = $_SERVER['DOCUMENT_ROOT'] . 'rawHotels';
 
-            echo $path.'<br />' . PHP_EOL;
+            //echo $path.'<br />' . PHP_EOL;
 
             if (!$handle = opendir($path)) throw new PException('Cannot read dir');
 
