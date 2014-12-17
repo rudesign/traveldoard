@@ -65,7 +65,7 @@ class ParserController extends BaseController
 
         $location = empty($location) ? $this->request->get('location') : $location;
         if(!empty($region)) $location .= ' '.$region;
-        if(!empty($country)) $location .= ' '.$country;
+        //if(!empty($country)) $location .= ' '.$country;
 
         $location = urlencode($location);
 

@@ -58,7 +58,7 @@ EOD;
 
         $output = shell_exec($bashCommand);
 
-        //return $output;
+        return $output;
 
         $output = json_decode($output);
 
