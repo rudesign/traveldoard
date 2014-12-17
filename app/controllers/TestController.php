@@ -11,5 +11,7 @@ class TestController extends BaseController
     public function testAction()
     {
         echo shell_exec('whoami');
+
+        $this->view->disable();
     }
 }
