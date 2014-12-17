@@ -75,9 +75,9 @@ class ProcessController extends BaseController
             if(!function_exists('qp')) throw new PException('No parser');
 
             // dir to look through
-            $path = $_SERVER['DOCUMENT_ROOT'] . '/rawHotels';
+            $path = $_SERVER['DOCUMENT_ROOT'] . 'rawHotels';
 
-            echo $path;
+            echo $path.'<br />' . PHP_EOL;
 
             if (!$handle = opendir($path)) throw new PException('Cannot read dir');
 
