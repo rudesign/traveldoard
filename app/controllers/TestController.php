@@ -11,7 +11,7 @@ class TestController extends BaseController
     public function testAction()
     {
         //var_dump(shell_exec('/usr/bin/curl -I ya.ru 2>&1'));
-        var_dump(shell_exec('whoami'));
+        var_dump(exec('whoami'));
 
         $this->view->disable();
     }
