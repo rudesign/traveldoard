@@ -79,6 +79,8 @@ EOD;
 
         $outputJSON = json_decode($output);
 
+        print_r($outputJSON);
+
         if(!empty($outputJSON->city)){
             return $output;
         }else{
