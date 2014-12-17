@@ -17,7 +17,7 @@ class ProcessController extends BaseController
 
             $cities = new Cities();
 
-            $result = $cities->query()->where('country_id = 1')->andWhere('json IS NOT NULL')->andWhere('http_status = 200')->limit(1)->execute();
+            $result = $cities->query()->where('country_id = 1')->andWhere('city_id=7807')->andWhere('json IS NOT NULL')->andWhere('http_status = 200')->limit(1)->execute();
 
             if ($city = $result->getFirst()) {
                 echo $city->getCityId() . ': ' . $city->getTitleEn() . '<br />' . PHP_EOL;
