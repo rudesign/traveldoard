@@ -58,7 +58,7 @@ EOD;
 
         $output = shell_exec($bashCommand);
 
-        echo $output;
+        echo $bashCommand;
         die;
         //return $output;
 
