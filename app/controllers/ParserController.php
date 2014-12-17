@@ -79,7 +79,7 @@ EOD;
 
         $outputJSON = json_decode($output);
 
-        print_r($outputJSON);
+        print_r($location);
 
         if(!empty($outputJSON->city)){
             return $output;
