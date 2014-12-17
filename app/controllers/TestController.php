@@ -58,7 +58,7 @@ EOD;
 
         $output = shell_exec($bashCommand);
 
-        echo $bashCommand;
+        echo urldecode($bashCommand);
         die;
         //return $output;
 
