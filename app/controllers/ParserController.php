@@ -34,7 +34,9 @@ class ParserController extends BaseController
             if ($city = $result->getFirst()) {
                 echo $city->getCityId() . ': ' . $city->getTitleEn();
 
-                $jsonStr = $this->getLocationJSON($city->getTitleRu(), $city->getRegionRu(), 'Россия');
+                $jsonStr = $this->getLocationJSON($city->getTitleEn(), $city->getRegionRu(), 'Россия');
+
+                echo $jsonStr.'<br />' . PHP_EOL;
 
                 $city->setJson($jsonStr);
                 $city->setHTTPStatus(200);
