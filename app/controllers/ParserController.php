@@ -201,6 +201,7 @@ EOD;
 
     public function getHotelAction()
     {
+        echo 1;
         try {
             $hotels = new Hotels();
 
