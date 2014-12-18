@@ -201,10 +201,9 @@ EOD;
 
     public function getHotelAction()
     {
-        echo 1;
         try {
             $hotels = new Hotels();
-
+            echo 1;
             $result = $hotels->query()
                 ->where('url_orig IS NOT NULL')
                 ->orderBy('hotel_id')
