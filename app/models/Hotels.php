@@ -15,6 +15,8 @@ class Hotels extends \Phalcon\Mvc\Model
      */
     protected $city_id;
 
+    protected $status;
+
     /**
      *
      * @var string
@@ -68,6 +70,13 @@ class Hotels extends \Phalcon\Mvc\Model
     public function setCityId($city_id)
     {
         $this->city_id = $city_id;
+
+        return $this;
+    }
+
+    public function setStatus($status)
+    {
+        $this->status = $status;
 
         return $this;
     }
@@ -151,6 +160,11 @@ class Hotels extends \Phalcon\Mvc\Model
         return $this->city_id;
     }
 
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
     /**
      * Returns the value of field name
      *
@@ -204,7 +218,8 @@ class Hotels extends \Phalcon\Mvc\Model
         return array(
             'hotel_id' => 'hotel_id', 
             'city_id' => 'city_id', 
-            'name' => 'name', 
+            'status' => 'status',
+            'name' => 'name',
             'address' => 'address',
             'url_orig' => 'url_orig',
             'hotel_id_orig' => 'hotel_id_orig', 

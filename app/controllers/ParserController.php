@@ -199,6 +199,7 @@ EOD;
         $this->view->disable();
     }
 
+    // 202
     public function getHotelAction()
     {
         try {
@@ -206,22 +207,37 @@ EOD;
 
             $result = $hotels->query()
                 ->where('url_orig IS NOT NULL')
+                ->andWhere('status IS NULL')
                 ->orderBy('hotel_id')
                 ->limit(1)
                 ->execute();
 
-            if (!$result = $result->getFirst()) throw new \Phalcon\Exception;
+            if (!$hotel = $result->getFirst()) throw new \Phalcon\Exception('No data');
 
-            $location = $result->getUrlOrig();
+            $fname = $_SERVER['DOCUMENT_ROOT'].'/rawHotels/items/'.$hotel->getHotelId().'.html';
+
+            if(!$res = fopen($fname, 'a')) throw new \Phalcon\Exception('Cannot open file for writing');
+
+            $location = $hotel->getUrlOrig();
 
             $bashCommand = <<<EOD
 curl -H "User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36" -H "Content-Type: text/plain; charset=utf-8" -H "Accept: text/plain" -H "Accept-Language: en-US,en;q=0.8,ru;q=0.6" -X GET -L 'http://booking.com$location'
 EOD;
 
-            echo shell_exec($bashCommand);
+            $output = shell_exec($bashCommand);
+
+            fwrite($res, $output);
+
+            fclose($res);
+
+            $hotel->setStatus(202);
+
+            if(!$hotel->update()) throw new \Phalcon\Exception('Status update failed');
+
+            echo $hotel->getHotelId().'.html stored<br />' . PHP_EOL;
 
         }catch (\Phalcon\Exception $e){
-            echo 'Empty<br >' . PHP_EOL;
+            echo $e->getMessage().'<br >' . PHP_EOL;
         }
 
         $this->view->disable();
