@@ -203,15 +203,15 @@ EOD;
     {
         try {
             $hotels = new Hotels();
-            echo 1;
+
             $result = $hotels->query()
                 ->where('url_orig IS NOT NULL')
                 ->orderBy('hotel_id')
                 ->limit(1)
                 ->execute();
-
+            echo 1;
             if (!$result = $result->getFirst()) throw new \Phalcon\Exception;
-
+            echo 1;
             $location = $result->getUrlOrig();
 
             $bashCommand = <<<EOD
