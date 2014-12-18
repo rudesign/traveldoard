@@ -199,7 +199,7 @@ EOD;
         $this->view->disable();
     }
 
-    public function getHotel()
+    public function getHotelAction()
     {
         try {
             $hotels = new Hotels();
