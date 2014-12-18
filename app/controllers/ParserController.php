@@ -199,6 +199,34 @@ EOD;
         $this->view->disable();
     }
 
+    public function getHotel()
+    {
+        try {
+            $hotels = new Hotels();
+
+            $result = $hotels->query()
+                ->where('url_orig IS NOT NULL')
+                ->orderBy('hotel_id')
+                ->limit(1)
+                ->execute();
+
+            if ($result = $result->getFirst()) {
+
+                $location = $result->getUrlOrig();
+
+                $bashCommand = <<<EOD
+curl -H "User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36" -H "Content-Type: text/plain; charset=utf-8" -H "Accept: application/json" -H "Accept-Encoding: gzip, deflate, sdch" -H "Accept-Language: en-US,en;q=0.8,ru;q=0.6" -X GET 'http://booking.com$location'
+EOD;
+
+                echo $output = shell_exec($bashCommand);
+            }
+        }catch (\Phalcon\Exception $e){
+            echo 'Empty<br >' . PHP_EOL;
+        }
+
+        $this->view->disable();
+    }
+
     protected function curl($data = array())
     {
         $provider  = Request::getProvider();
