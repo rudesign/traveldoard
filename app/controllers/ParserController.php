@@ -1,6 +1,7 @@
 <?php
 
 use Phalcon\Http\Client\Request;
+use Phalcon\Exception as PException;
 
 class ParserController extends BaseController
 {
@@ -216,7 +217,7 @@ EOD;
 
             $fname = $_SERVER['DOCUMENT_ROOT'].'/rawHotels/items/'.$hotel->getHotelId().'.html';
 
-            if(!$res = fopen($fname, 'a')) throw new \Phalcon\Exception('Cannot open file for writing');
+            if(!$res = fopen($fname, 'a')) throw new PException('Cannot open file for writing');
 
             $location = $hotel->getUrlOrig();
 
@@ -236,7 +237,7 @@ EOD;
 
             echo $hotel->getHotelId().'.html stored<br />' . PHP_EOL;
 
-        }catch (\Phalcon\Exception $e){
+        }catch (PException $e){
             echo $e->getMessage().'<br >' . PHP_EOL;
         }
 

@@ -32,6 +32,6 @@ try {
     echo '<h1>Stacktrace</h1>';
 
     foreach($e->getTrace() as $row){
-        echo $row['class'].$row['type'].$row['function'].($row['file'] ? ' (file '.$row['file'].' at line '.$row['line'] : '').')<br />';
+        echo $row['class'].$row['type'].$row['function'].(!empty($row['file']) ? ' (file '.$row['file'].' at line '.$row['line'].')' : '').'<br />';
     }
 }

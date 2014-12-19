@@ -1,6 +1,6 @@
 <?php
 
-use \Phalcon\Exception as PException;
+use Phalcon\Exception as PException;
 
 class ProcessController extends BaseController
 {
@@ -75,7 +75,7 @@ class ProcessController extends BaseController
             if(!function_exists('qp')) throw new PException('No parser');
 
             // dir to look through
-            $path = $_SERVER['DOCUMENT_ROOT'] . 'rawHotels';
+            $path = $_SERVER['DOCUMENT_ROOT'] . '/rawHotels';
 
             //echo $path.'<br />' . PHP_EOL;
 
@@ -98,8 +98,8 @@ class ProcessController extends BaseController
                         if ($rawEntry = explode('_', $entry)) $cityId = (int) reset($rawEntry);
 
                         // get city hotels count
-                        $hotels = new Cities();
-                        $city = $hotels->query()->where('city_id='.$cityId)->columns('hotels')->execute()->getFirst();
+                        $cities = new Cities();
+                        $city = $cities->query()->where('city_id='.$cityId)->columns('hotels')->execute()->getFirst();
                         // get stored city hotels count
                         $hotels = new Hotels();
                         $hotelsCount = $hotels->query()->where('city_id='.$cityId)->columns('COUNT(*) as count')->execute()->getFirst();
@@ -158,6 +158,65 @@ class ProcessController extends BaseController
                         } else echo 'No hotels grid<br />' . PHP_EOL;
 
                         if(rename($fname, $newFname)) echo 'Source file renamed'; else echo 'Source file rename failed';
+
+                        break;
+                    }
+                }
+            }
+
+        }catch (PException $e){
+            echo $e->getMessage();
+        }
+
+        $this->view->disable();
+    }
+
+    public function getHotelAction()
+    {
+        try {
+
+            // QueryParser location
+            $lPath = $this->config->application->libraryDir . 'querypath/src/qp.php';
+
+            require $lPath;
+
+            if(!function_exists('qp')) throw new PException('No parser');
+
+            // dir to look through
+            $path = $_SERVER['DOCUMENT_ROOT'] . '/rawHotels/items';
+
+            //echo $path.'<br />' . PHP_EOL;
+
+            if (!$handle = opendir($path)) throw new PException('Cannot read dir');
+
+            // walk over all stored files in the dir
+            while (($entry = readdir($handle)) !== false) {
+                if (strlen($entry) > 2) {
+
+                    $fname = $path . '/' . $entry;
+
+                    if (is_file($fname)) {
+
+                        echo $entry . '<br />' . PHP_EOL;
+
+                        $newFname = $path . '/done/' . $entry;
+
+                        // get city id from the file name
+                        $hotelId = 0;
+                        if ($rawEntry = explode('.', $entry)) $hotelId = (int) reset($rawEntry);
+
+                        $hotels = new Hotels();
+                        if(!$hotel = $hotels->query()->where('status=202')->execute()->getFirst()) throw new PException('No data');
+
+                        echo 'Processed '.$hotel->getName().', '.$hotel->cities->getTitleRu().'<br />' . PHP_EOL;
+
+                        $qp = htmlqp($fname, 'body');
+
+                        if($qp->count()){
+
+                        } else echo 'No html slice<br />' . PHP_EOL;
+
+                        //if(rename($fname, $newFname)) echo 'Source file renamed'; else echo 'Source file rename failed';
 
                         break;
                     }
