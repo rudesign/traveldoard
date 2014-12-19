@@ -212,6 +212,8 @@ class ProcessController extends BaseController
 
                         if(!$qp->count()) throw new PException('No html slice');
 
+                        echo 'Process <a href="/rawHotels/items/'.$hotel->getHotelId().'.html" target="_blank">'.$hotel->getName().'</a>, '.$hotel->cities->getTitleRu().'<br />' . PHP_EOL;
+
 //                        <span id="hp_address_subtitle" class="jq_tooltip" rel="14" data-source="top_link" data-coords="37.610327093193064,55.75103368673392" data-node_tt_id="location_score_tooltip" data-bbox="37.58050561,55.74550902,37.62325346,55.76068242" data-width="350" title="">
 //                            Улица Моховая 10, Здание 1, Москва, Россия,
 //                        </span>
@@ -226,9 +228,6 @@ class ProcessController extends BaseController
                         $hotel->save();
 
                         //if(rename($fname, $newFname)) echo 'Source file renamed'; else echo 'Source file rename failed';
-
-                        echo 'Processed <a href="/rawHotels/items/'.$hotel->getHotelId().'.html" target="_blank">'.$hotel->getName().'</a>, '.$hotel->cities->getTitleRu().'<br />' . PHP_EOL;
-
 
                         break;
                     }
