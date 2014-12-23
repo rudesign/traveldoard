@@ -103,19 +103,19 @@ class ProcessController extends BaseController
 
                             // get city hotels count
                             $cities = new Cities();
-                            $city = $cities->query()->where('city_id=' . $cityId)->columns('hotels')->execute()->getFirst();
+                            $city = $cities->query()->where('city_id=' . $cityId)->execute()->getFirst();
                             // get stored city hotels count
                             $hotels = new Hotels();
                             $hotelsCount = $hotels->query()->where('city_id=' . $cityId)->columns('COUNT(*) as count')->execute()->getFirst();
 
-                            echo 'Stored ' . $hotelsCount->count . ' from ' . $city->hotels . '<br /><br />' . PHP_EOL;
+                            echo 'Stored ' . $hotelsCount->count . ' from ' . $city->getHotels() . '<br /><br />' . PHP_EOL;
 
                             $qp = htmlqp($fname, '.nodates_hotels');
 
                             if ($qp->count()) {
                                 $i = 0;
                                 $s = $hotelsCount->count;
-                                while (($i < $itemsLimit) && ($s < $city->hotels) && $item = $qp->find('.sr_item.sr_item_no_dates')->eq($i)) {
+                                while (($i < $itemsLimit) && ($s < $city->getHotels()) && $item = $qp->find('.sr_item.sr_item_no_dates')->eq($i)) {
 
                                     $a = $item->find('h3 a')->eq(0);
 
