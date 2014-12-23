@@ -66,7 +66,6 @@ class ProcessController extends BaseController
 
             $itemsLimit = 50;
 
-
             // QueryParser location
             $lPath = $this->config->application->libraryDir . 'querypath/src/qp.php';
 
@@ -82,89 +81,98 @@ class ProcessController extends BaseController
             if (!$handle = opendir($path)) throw new PException('Cannot read dir');
 
             // walk over all stored files in the dir
+            $filesCount = 0;
             while (($entry = readdir($handle)) !== false) {
                 if (strlen($entry) > 2) {
 
                     $fname = $path . '/' . $entry;
 
                     if (is_file($fname)) {
+                        $filesCount++;
+                        $filesize = filesize($fname);
 
-                        echo $entry . '<br /><br />' . PHP_EOL;
+                        echo $entry . ' in '.$filesize.' bytes<br /><br />' . PHP_EOL;
 
                         $newFname = $path . '/done/' . $entry;
 
-                        // get city id from the file name
-                        $cityId = 0;
-                        if ($rawEntry = explode('_', $entry)) $cityId = (int) reset($rawEntry);
+                        if($filesize) {
 
-                        // get city hotels count
-                        $cities = new Cities();
-                        $city = $cities->query()->where('city_id='.$cityId)->columns('hotels')->execute()->getFirst();
-                        // get stored city hotels count
-                        $hotels = new Hotels();
-                        $hotelsCount = $hotels->query()->where('city_id='.$cityId)->columns('COUNT(*) as count')->execute()->getFirst();
-                        echo 'Stored '.$hotelsCount->count.' from '.$city->hotels.'<br /><br />' . PHP_EOL;
+                            // get city id from the file name
+                            $cityId = 0;
+                            if ($rawEntry = explode('_', $entry)) $cityId = (int)reset($rawEntry);
 
-                        $qp = htmlqp($fname, '.nodates_hotels');
+                            // get city hotels count
+                            $cities = new Cities();
+                            $city = $cities->query()->where('city_id=' . $cityId)->columns('hotels')->execute()->getFirst();
+                            // get stored city hotels count
+                            $hotels = new Hotels();
+                            $hotelsCount = $hotels->query()->where('city_id=' . $cityId)->columns('COUNT(*) as count')->execute()->getFirst();
 
-                        if($qp->count()){
-                            $i = 0;
-                            $s = $hotelsCount->count;
-                            while (($i < $itemsLimit) && ($s < $city->hotels) && $item = $qp->find('.sr_item.sr_item_no_dates')->eq($i)) {
+                            echo 'Stored ' . $hotelsCount->count . ' from ' . $city->hotels . '<br /><br />' . PHP_EOL;
 
-                                $a = $item->find('h3 a')->eq(0);
+                            $qp = htmlqp($fname, '.nodates_hotels');
 
-                                if($hotelIdOrig = (int)$item->attr('data-hotelid')) {
+                            if ($qp->count()) {
+                                $i = 0;
+                                $s = $hotelsCount->count;
+                                while (($i < $itemsLimit) && ($s < $city->hotels) && $item = $qp->find('.sr_item.sr_item_no_dates')->eq($i)) {
 
-                                    $name = trim($a->text());
-                                    $address = trim($item->find('div.address')->text());
-                                    $urlOrig = trim($a->attr('href'));
-                                    $thumbUriOrig = trim($item->find('img.hotel_image')->attr('src'));
+                                    $a = $item->find('h3 a')->eq(0);
 
-                                    echo $hotelIdOrig . '<br />' . PHP_EOL;
-                                    echo $name . '<br />' . PHP_EOL;
-                                    echo $address . '<br />' . PHP_EOL;
-                                    echo $urlOrig . '<br />' . PHP_EOL;
-                                    echo $thumbUriOrig . '<br />' . PHP_EOL;
+                                    if ($hotelIdOrig = (int)$item->attr('data-hotelid')) {
 
-                                    $hotels = new Hotels();
+                                        $name = trim($a->text());
+                                        $address = trim($item->find('div.address')->text());
+                                        $urlOrig = trim($a->attr('href'));
+                                        $thumbUriOrig = trim($item->find('img.hotel_image')->attr('src'));
 
-                                    $hotels->setCityId($cityId);
-                                    $hotels->setName($name);
-                                    $hotels->setAddress($address);
-                                    $hotels->setHotelIdOrig($hotelIdOrig);
-                                    $hotels->setUrlOrig($urlOrig);
-                                    $hotels->setThumbUriOrig($thumbUriOrig);
+                                        echo $hotelIdOrig . '<br />' . PHP_EOL;
+                                        echo $name . '<br />' . PHP_EOL;
+                                        echo $address . '<br />' . PHP_EOL;
+                                        echo $urlOrig . '<br />' . PHP_EOL;
+                                        echo $thumbUriOrig . '<br />' . PHP_EOL;
 
-                                    try {
-                                        if ($hotels->create() != false) {
-                                            echo 'OK' . PHP_EOL;
-                                        } else {
-                                            echo 'Failed ' . PHP_EOL;
-                                            foreach ($hotels->getMessages() as $value) {
-                                                echo $value->getMessage();
+                                        $hotels = new Hotels();
+
+                                        $hotels->setCityId($cityId);
+                                        $hotels->setName($name);
+                                        $hotels->setAddress($address);
+                                        $hotels->setHotelIdOrig($hotelIdOrig);
+                                        $hotels->setUrlOrig($urlOrig);
+                                        $hotels->setThumbUriOrig($thumbUriOrig);
+
+                                        try {
+                                            if ($hotels->create() != false) {
+                                                echo 'OK' . PHP_EOL;
+                                            } else {
+                                                echo 'Failed ' . PHP_EOL;
+                                                foreach ($hotels->getMessages() as $value) {
+                                                    echo $value->getMessage();
+                                                }
                                             }
+                                        } catch (\Exception $e) {
+                                            echo $e->getMessage();
                                         }
-                                    } catch (\Exception $e) {
-                                        echo $e->getMessage();
+
+                                        echo '<br /><br />' . PHP_EOL;
                                     }
 
-                                    echo '<br /><br />' . PHP_EOL;
+                                    $i++;
+                                    $s++;
                                 }
+                            } else echo 'No hotels grid<br />' . PHP_EOL;
 
-                                $i++;
-                                $s++;
-                            }
-                        } else echo 'No hotels grid<br />' . PHP_EOL;
+                            break;
+                        }
 
-                        if(rename($fname, $newFname)) echo 'Source file renamed'; else echo 'Source file rename failed';
-
-                        break;
+                        if(rename($fname, $newFname)) echo 'Source file renamed<br />' . PHP_EOL; else echo 'Source file rename failed<br />' . PHP_EOL;
                     }
                 }
             }
+            echo $filesCount.' file(s) in total<br />';
 
         }catch (PException $e){
+            echo $e->getLine().'<br />' . PHP_EOL;
             echo $e->getMessage();
         }
 
