@@ -127,8 +127,8 @@ class ProcessController extends BaseController
                                         $thumbUriOrig = trim($item->find('img.hotel_image')->attr('src'));
 
                                         echo $hotelIdOrig . '<br />' . PHP_EOL;
-                                        echo 'Назвние: '.$name . '<br />' . PHP_EOL;
-                                        echo 'Населённый пункт: '.$address . '<br />' . PHP_EOL;
+                                        echo 'Название: '.$name . '<br />' . PHP_EOL;
+                                        echo 'Населённый пункт: remote: '.$address . ', local: '.$city->getTitleRu().'<br />' . PHP_EOL;
                                         echo 'URL: <a href="http://booking.com'.$urlOrig . '" target="_blank">'.$urlOrig . '</a><br />' . PHP_EOL;
                                         echo 'Изображение: <a href="'.$thumbUriOrig . '" target="_blank">'.$thumbUriOrig . '</a><br />' . PHP_EOL;
 
