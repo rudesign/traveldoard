@@ -161,11 +161,11 @@ class ProcessController extends BaseController
                                     $s++;
                                 }
                             } else echo 'No hotels grid<br />' . PHP_EOL;
-
-                            break;
                         }
 
                         if(rename($fname, $newFname)) echo 'Source file renamed<br />' . PHP_EOL; else echo 'Source file rename failed<br />' . PHP_EOL;
+
+                        break;
                     }
                 }
             }
