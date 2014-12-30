@@ -222,9 +222,31 @@ class ProcessController extends BaseController
 
                         echo 'Process <a href="/rawHotels/items/'.$hotel->getHotelId().'.html" target="_blank">'.$hotel->getName().'</a>, '.$hotel->cities->getTitleRu().'<br />' . PHP_EOL;
 
-//                        <span id="hp_address_subtitle" class="jq_tooltip" rel="14" data-source="top_link" data-coords="37.610327093193064,55.75103368673392" data-node_tt_id="location_score_tooltip" data-bbox="37.58050561,55.74550902,37.62325346,55.76068242" data-width="350" title="">
-//                            Улица Моховая 10, Здание 1, Москва, Россия,
-//                        </span>
+                        /*
+                        1. Полное название отеля
+                        2. Полный адрес отеля
+                        3. Текст описания отеля
+                        4. Звёздность
+                        5. Фотографии отеля и номеров
+                        6. Количество номеров в отеле
+                        7. Пластиковые карты, которые принимает отель
+                        8. Список типов номеров отеля
+                        9. Время check in и check out
+                        10. Правила размещения детей и домашних животных
+                        11. Наличие возможности доступа в Интернет
+                        12. Наличие автомобильной парковки
+                        13. Сервисы в отеле
+                        14. Дополнительная информация о сервисах
+                        15. Рекомендованные отели (видимо по схожим характеристикам)
+                        16. Языки, на которых говорит персонал отеля
+                        17. Количество отзывов
+                        18. Пользовательская оценка отеля из 10 баллов по различным группам оценщиков (одиночки, пары, пары с детьми и т.д.)
+                        19. Пользовательская оценка отеля из 10 баллов по различным параметрам (чистота, комфорт, качество wifi и т.д.)
+                        1. SEO: description, keywords
+                        2. Geo: широта, долгота
+                        3. ссылки на страницу отеля на других языках
+                        4. Тип отеля (напр. “Гостевые дома”)
+                        */
 
                         $address = trim($qp->find('#hp_address_subtitle')->text());
 
@@ -233,7 +255,7 @@ class ProcessController extends BaseController
                             echo 'Address: '.$address.'<br />' . PHP_EOL;
                         }
 
-                        $hotel->save();
+                        //$hotel->save();
 
                         //if(rename($fname, $newFname)) echo 'Source file renamed'; else echo 'Source file rename failed';
 
