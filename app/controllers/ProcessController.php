@@ -216,7 +216,7 @@ class ProcessController extends BaseController
                         $hotels = new Hotels();
                         if(!$hotel = $hotels->query()->where('hotel_id='.$hotelId)->execute()->getFirst()) throw new PException('No data');
 
-                        $qp = htmlqp($fname, '.wrap-hotelpage-top');
+                        $qp = htmlqp($fname, '#right');
 
                         if(!$qp->count()) throw new PException('No html slice');
 
@@ -248,11 +248,27 @@ class ProcessController extends BaseController
                         4. Тип отеля (напр. “Гостевые дома”)
                         */
 
-                        $address = trim($qp->find('#hp_address_subtitle')->text());
+                        $data = trim($qp->find('#hp_address_subtitle')->eq(0)->text());
+                        if(!empty($data)){
+                            //$hotel->setAddress($data);
+                            echo '<b>Address:</b> '.$data.'<br />' . PHP_EOL;
+                        }
 
-                        if(!empty($address)){
-                            $hotel->setAddress($address);
-                            echo 'Address: '.$address.'<br />' . PHP_EOL;
+
+                        $data = $qp->find('#summary')->find('p')->not('.hp_district_endorsements')->get();
+                        $text = array();
+                        foreach($data as $item){
+                            if(!empty($item->textContent)) $text[] = $item->textContent;
+                        }
+                        if(!empty($text)){
+                            //$hotel->setAddress($data);
+                            echo '<b>Summary:</b> '.$data.'<br />' . PHP_EOL;
+                        }
+
+                        $data = trim($qp->find('#summary')->find('.hp_district_endorsements')->eq(0)->text());
+                        if(!empty($data)){
+                            //$hotel->setAddress($data);
+                            echo '<b>District char:</b> '.str_replace("\n", '===', $data).'<br />' . PHP_EOL;
                         }
 
                         //$hotel->save();
