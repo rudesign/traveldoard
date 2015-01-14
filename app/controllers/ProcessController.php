@@ -250,7 +250,7 @@ class ProcessController extends BaseController
 
                         $data = trim($qp->find('#hp_address_subtitle')->eq(0)->text());
                         if(!empty($data)){
-                            //$hotel->setAddress($data);
+                            $hotel->setAddressOrig($data);
                             echo '<b>Address:</b> '.$data.'<br />' . PHP_EOL;
                         }
 
@@ -261,8 +261,9 @@ class ProcessController extends BaseController
                             if(!empty($item->textContent)) $text[] = $item->textContent;
                         }
                         if(!empty($text)){
-                            //$hotel->setAddress($data);
-                            echo '<b>Summary:</b> '.$data.'<br />' . PHP_EOL;
+                            $text = implode(' ', $text);
+                            $hotel->setSummary($text);
+                            echo '<b>Summary:</b> '.$text.'<br />' . PHP_EOL;
                         }
 
                         $data = trim($qp->find('#summary')->find('.hp_district_endorsements')->eq(0)->text());
@@ -271,9 +272,9 @@ class ProcessController extends BaseController
                             echo '<b>District char:</b> '.str_replace("\n", '===', $data).'<br />' . PHP_EOL;
                         }
 
-                        //$hotel->save();
+                        $hotel->save();
 
-                        //if(rename($fname, $newFname)) echo 'Source file renamed'; else echo 'Source file rename failed';
+                        if(rename($fname, $newFname)) echo 'Source file renamed'; else echo 'Source file rename failed';
 
                         break;
                     }

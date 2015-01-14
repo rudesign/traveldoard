@@ -13,9 +13,13 @@ class Hotels extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    protected $city_id;
+    protected $region_id;
 
-    protected $status;
+    /**
+     *
+     * @var integer
+     */
+    protected $city_id;
 
     /**
      *
@@ -23,7 +27,15 @@ class Hotels extends \Phalcon\Mvc\Model
      */
     protected $name;
 
+    /**
+     *
+     * @var string
+     */
     protected $address;
+
+    protected $address_orig;
+
+    protected $summary;
 
     /**
      *
@@ -43,9 +55,15 @@ class Hotels extends \Phalcon\Mvc\Model
      */
     protected $thumb_uri_orig;
 
+    /**
+     *
+     * @var string
+     */
+    protected $status;
+
     public function initialize()
     {
-        $this->hasOne("city_id", "Cities", "city_id");
+        $this->hasOne('city_id', 'Cities', 'city_id');
     }
 
     /**
@@ -57,6 +75,13 @@ class Hotels extends \Phalcon\Mvc\Model
     public function setHotelId($hotel_id)
     {
         $this->hotel_id = $hotel_id;
+
+        return $this;
+    }
+
+    public function setRegionId($region_id)
+    {
+        $this->region_id = $region_id;
 
         return $this;
     }
@@ -74,13 +99,6 @@ class Hotels extends \Phalcon\Mvc\Model
         return $this;
     }
 
-    public function setStatus($status)
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
     /**
      * Method to set the value of field name
      *
@@ -94,9 +112,29 @@ class Hotels extends \Phalcon\Mvc\Model
         return $this;
     }
 
+    /**
+     * Method to set the value of field address
+     *
+     * @param string $address
+     * @return $this
+     */
     public function setAddress($address)
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    public function setAddressOrig($address)
+    {
+        $this->address_orig = $address;
+
+        return $this;
+    }
+
+    public function setSummary($summary)
+    {
+        $this->summary = $summary;
 
         return $this;
     }
@@ -141,6 +179,19 @@ class Hotels extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Method to set the value of field status
+     *
+     * @param string $status
+     * @return $this
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
      * Returns the value of field hotel_id
      *
      * @return integer
@@ -148,6 +199,11 @@ class Hotels extends \Phalcon\Mvc\Model
     public function getHotelId()
     {
         return $this->hotel_id;
+    }
+
+    public function getRegionId()
+    {
+        return $this->region_id;
     }
 
     /**
@@ -160,11 +216,6 @@ class Hotels extends \Phalcon\Mvc\Model
         return $this->city_id;
     }
 
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
     /**
      * Returns the value of field name
      *
@@ -175,9 +226,24 @@ class Hotels extends \Phalcon\Mvc\Model
         return $this->name;
     }
 
+    /**
+     * Returns the value of field address
+     *
+     * @return string
+     */
     public function getAddress()
     {
         return $this->address;
+    }
+
+    public function getAddressOrig()
+    {
+        return $this->address_orig;
+    }
+
+    public function getSummary()
+    {
+        return $this->summary;
     }
 
     /**
@@ -211,20 +277,51 @@ class Hotels extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Returns the value of field status
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
      * Independent Column Mapping.
      */
     public function columnMap()
     {
         return array(
             'hotel_id' => 'hotel_id', 
-            'city_id' => 'city_id', 
-            'status' => 'status',
+            'region_id' => 'region_id',
+            'city_id' => 'city_id',
             'name' => 'name',
-            'address' => 'address',
+            'address' => 'address', 
+            'address_orig' => 'address_orig',
+            'summary' => 'summary',
             'url_orig' => 'url_orig',
             'hotel_id_orig' => 'hotel_id_orig', 
-            'thumb_uri_orig' => 'thumb_uri_orig'
+            'thumb_uri_orig' => 'thumb_uri_orig', 
+            'status' => 'status'
         );
+    }
+
+    /**
+     * Get count of items
+     * @return int
+     */
+    public function getCount(){
+        try{
+
+            $query = $this->query()->columns('COUNT(*) AS total');
+            $result = $query->execute();
+
+            if(!$row = $result->getFirst()) throw new \Exception;
+
+            return $row->total;
+        }catch (\Exception $e){
+            return 0;
+        }
     }
 
 }
