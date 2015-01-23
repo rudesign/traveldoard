@@ -199,6 +199,8 @@ class ProcessController extends BaseController
 
             // walk over all stored files in the dir
             while (($entry = readdir($handle)) !== false) {
+                //$entry = '23583.html';
+
                 if (strlen($entry) > 2) {
 
                     $fname = $path . '/' . $entry;
@@ -214,74 +216,382 @@ class ProcessController extends BaseController
                         if ($rawEntry = explode('.', $entry)) $hotelId = (int) reset($rawEntry);
 
                         $hotels = new Hotels();
-                        if(!$hotel = $hotels->query()->where('hotel_id='.$hotelId)->execute()->getFirst()) throw new PException('No data');
+                        if($hotel = $hotels->query()->where('hotel_id='.$hotelId)->execute()->getFirst()) {
 
-                        $qp = htmlqp($fname, '#right');
+                            $qp = htmlqp($fname, '#right');
+                            //$qp = htmlqp($fname, 'html');
 
-                        if(!$qp->count()) throw new PException('No html slice');
+                            if ($qp->count()){
 
-                        echo 'Process <a href="/rawHotels/items/'.$hotel->getHotelId().'.html" target="_blank">'.$hotel->getName().'</a>, '.$hotel->cities->getTitleRu().'<br />' . PHP_EOL;
+                                echo 'Process <a href="/rawHotels/items/' . $hotel->getHotelId() . '.html" target="_blank">' . $hotel->getName() . '</a>, ' . $hotel->cities->getTitleRu() . '<br />' . PHP_EOL;
 
-                        /*
-                        1. Полное название отеля
-                        2. Полный адрес отеля
-                        3. Текст описания отеля
-                        4. Звёздность
-                        5. Фотографии отеля и номеров
-                        6. Количество номеров в отеле
-                        7. Пластиковые карты, которые принимает отель
-                        8. Список типов номеров отеля
-                        9. Время check in и check out
-                        10. Правила размещения детей и домашних животных
-                        11. Наличие возможности доступа в Интернет
-                        12. Наличие автомобильной парковки
-                        13. Сервисы в отеле
-                        14. Дополнительная информация о сервисах
-                        15. Рекомендованные отели (видимо по схожим характеристикам)
-                        16. Языки, на которых говорит персонал отеля
-                        17. Количество отзывов
-                        18. Пользовательская оценка отеля из 10 баллов по различным группам оценщиков (одиночки, пары, пары с детьми и т.д.)
-                        19. Пользовательская оценка отеля из 10 баллов по различным параметрам (чистота, комфорт, качество wifi и т.д.)
-                        1. SEO: description, keywords
-                        2. Geo: широта, долгота
-                        3. ссылки на страницу отеля на других языках
-                        4. Тип отеля (напр. “Гостевые дома”)
-                        */
 
-                        $data = trim($qp->find('#hp_address_subtitle')->eq(0)->text());
-                        if(!empty($data)){
-                            $hotel->setAddressOrig($data);
-                            echo '<b>Address:</b> '.$data.'<br />' . PHP_EOL;
+                                // address
+                                /*
+                                $data = trim($qp->find('#hp_address_subtitle')->eq(0)->text());
+                                if (!empty($data)) {
+                                    $hotel->setAddressOrig($data);
+                                    echo '<b>Address:</b> ' . $data . '<br />' . PHP_EOL;
+                                }
+                                */
+
+                                // description
+                                /*
+                                $data = $qp->find('#summary')->find('p')->not('.hp_district_endorsements')->get();
+                                $text = array();
+                                foreach ($data as $item) {
+                                    if (!empty($item->textContent)) $text[] = $item->textContent;
+                                }
+                                if (!empty($text)) {
+                                    $text = implode(' ', $text);
+                                    $hotel->setSummary($text);
+                                    echo '<b>Summary:</b> ' . $text . '<br />' . PHP_EOL;
+                                }
+                                */
+
+                                // district properties
+                                /*
+                                $data = trim($qp->find('#summary')->find('.hp_district_endorsements')->eq(0)->text());
+                                if (!empty($data)) {
+                                    //$hotel->setAddress($data);
+                                    echo '<b>District char:</b> ' . str_replace("\n", '===', $data) . '<br />' . PHP_EOL;
+                                }
+                                */
+
+                                // lat
+                                /*
+                                $data = trim($qp->find('head')->find('meta[property="booking_com:location:latitude"]')->attr('content'));
+                                if (!empty($data)) {
+                                    $hotel->setLat($data);
+                                    echo '<b>Lat:</b> ' . $data . '<br />' . PHP_EOL;
+                                }
+                                */
+
+                                // lng
+                                /*
+                                $data = trim($qp->find('head')->find('meta[property="booking_com:location:longitude"]')->attr('content'));
+                                if (!empty($data)) {
+                                    $hotel->setLng($data);
+                                    echo '<b>Lng:</b> ' . $data . '<br />' . PHP_EOL;
+                                }
+                                */
+
+                                // rating
+                                /*
+                                $data = trim($qp->find('h1.item')->find('i.stars')->attr('class'));
+                                if (!empty($data)) {
+                                    if(preg_match('/ratings_stars_(\d)/i', $data, $matches)){
+                                        if($rating = end($matches)) $found = true;
+                                        $hotel->setRating($rating);
+                                        echo '<b>Rating:</b> ' . $rating . '<br />' . PHP_EOL;
+                                        $hotel->save();
+                                    }
+
+                                }
+                                */
+
+                                // images
+                                $i = 0;
+                                $gallery = array();
+                                while($data = $qp->find('#photos_distinct')->eq(0)->find('a.change_large_image_on_hover')->eq($i)->attr('data-resized')){
+                                    echo $data.'<br />';
+                                    $gallery[] = $data;
+                                    $i++;
+                                }
+                                $gallery = implode(', ', $gallery);
+                                $hotel->setGallery($gallery);
+
+
+                                // hotel summary data
+                                /*
+                                $data = trim($qp->find('p.summary')->eq(0)->text());
+                                if (!empty($data)) {
+                                    if(preg_match('/Номеров в отеле: (\d+)/i', $data, $matches)){
+                                        $rooms = end($matches);
+                                        $hotel->setRooms($rooms);
+                                        echo '<b>Rooms:</b> ' . $rooms . '<br />' . PHP_EOL;
+                                        $hotel->save();
+                                    }
+                                }
+                                */
+
+                                // object type
+                                /*
+                                $data = trim($qp->find('body')->find('script')->eq(0)->text());
+                                if (!empty($data)) {
+                                    if(preg_match("/atnm: '(\S+)'/i", $data, $matches)){
+                                        $type = end($matches);
+                                        $hotel->setType($type);
+                                        echo '<b>Type:</b> ' . $type . '<br />' . PHP_EOL;
+                                        $hotel->save();
+                                    }
+                                }
+                                */
+
+                                // payment types
+                                /*
+                                $i = 0;
+                                $types = array();
+                                while($data = $qp->find('.hp_bp_payment_method')->eq(0)->find('span.creditcard')->eq($i)->attr('class')){
+                                    $data = trim(str_replace('creditcard ', '', $data));
+                                    echo $data.'<br />';
+                                    $types[] = $data;
+                                    $i++;
+                                }
+                                $types = implode(', ', $types);
+                                $hotel->setPaymentTypes($types);
+                                */
+
+                                // room types
+                                /*
+                                $i = 0;
+                                $types = array();
+                                while($data = $qp->find('.roomstable')->eq(0)->find('td.ftd')->eq($i)->text()){
+                                    $data = trim($data);
+                                    echo $data.'<br />';
+                                    $types[] = $data;
+                                    $i++;
+                                }
+                                $types = implode('# ', $types);
+                                $hotel->setRoomTypes($types);
+                                */
+
+                                // Check in time
+                                /*
+                                $data = trim($qp->find('#checkin_policy p')->last()->text());
+                                if (!empty($data)) {
+                                    $hotel->setCheckIn($data);
+                                    echo '<b>Check in time:</b> ' . $data . '<br />' . PHP_EOL;
+                                }
+                                // Check out time
+                                $data = trim($qp->find('#checkout_policy p')->last()->text());
+                                if (!empty($data)) {
+                                    $hotel->setCheckOut($data);
+                                    echo '<b>Check out time:</b> ' . $data . '<br />' . PHP_EOL;
+                                }
+                                */
+
+                                // Languages speaking
+                                /*
+                                $data = trim($qp->find('div.facility_icon_id_languages p')->eq(0)->text());
+                                if (!empty($data)) {
+                                    $data = str_replace("\n", ' ', $data);
+                                    $data = str_replace("\r", '', $data);
+                                    $hotel->setLanguages($data);
+                                    echo '<b>Languages:</b> ' . $data . '<br />' . PHP_EOL;
+                                }
+                                */
+
+                                // Services
+                                /*
+                                $data = trim($qp->find('div.facility_icon_id_3 p.firstpar')->eq(0)->text());
+                                if (!empty($data)) {
+                                    $data = str_replace("\n", ' ', $data);
+                                    $data = str_replace("\r", '', $data);
+                                    $hotel->setServices($data);
+                                    echo '<b>Services:</b> ' . $data . '<br />' . PHP_EOL;
+                                }
+                                */
+
+                                // Extra services
+                                /*
+                                $data = trim($qp->find('div.facility_icon_id_1 p.firstpar')->eq(0)->text());
+                                if (!empty($data)) {
+                                    $data = str_replace("\n", ' ', $data);
+                                    $data = str_replace("\r", '', $data);
+                                    $hotel->setExtraServices($data);
+                                    echo '<b>Extra services:</b> ' . $data . '<br />' . PHP_EOL;
+                                }
+                                */
+
+                                // Children policy
+                                /*
+                                $data = trim($qp->find('#children_policy')->eq(0)->text());
+                                if (!empty($data)) {
+                                    $data = str_replace("\n", ' ', $data);
+                                    $data = str_replace("\r", '', $data);
+                                    $data = str_replace("Размещение детей и предоставление дополнительных кроватей", '', $data);
+                                    $data = str_replace("Бесплатно! ", '', $data);
+                                    $data = trim($data);
+                                    $hotel->setChildrenPolicy($data);
+                                    echo '<b>Children policy:</b> ' . $data . '<br />' . PHP_EOL;
+                                }
+                                */
+
+                                // Food
+                                /*
+                                $data = trim($qp->find('div.facility_icon_id_7 p.firstpar')->eq(0)->text());
+                                if (!empty($data)) {
+                                    $data = str_replace("\n", ' ', $data);
+                                    $data = str_replace("\r", '', $data);
+                                    $hotel->setFood($data);
+                                    echo '<b>Food:</b> ' . $data . '<br />' . PHP_EOL;
+                                }
+                                */
+
+                                // Parking
+                                /*
+                                $data = trim($qp->find('div#parking_policy p')->last()->text());
+                                if (!empty($data)) {
+                                    $data = str_replace("\n", ' ', $data);
+                                    $data = str_replace("\r", '', $data);
+                                    $data = str_replace("Бесплатно! ", '', $data);
+                                    $hotel->setParking($data);
+                                    echo '<b>Parking:</b> ' . $data . '<br />' . PHP_EOL;
+                                }
+                                */
+
+                                // Wellness
+                                /*
+                                $data = trim($qp->find('div.facility_icon_id_2 p.firstpar')->eq(0)->text());
+                                if (!empty($data)) {
+                                    $data = str_replace("\n", ' ', $data);
+                                    $data = str_replace("\r", '', $data);
+                                    $hotel->setWellness($data);
+                                    echo '<b>Wellness facilities:</b> ' . $data . '<br />' . PHP_EOL;
+                                }
+                                */
+
+                                // Internet
+                                /*
+                                $data = trim($qp->find('div#internet_policy')->eq(0)->text());
+                                if (!empty($data)) {
+                                    $data = str_replace("\n", ' ', $data);
+                                    $data = str_replace("\r", '', $data);
+                                    $data = str_replace("Интернет", '', $data);
+                                    $data = str_replace("Бесплатно! ", '', $data);
+                                    $data = str_replace("Не тратьте деньги на роуминг в путешествиях!", '', $data);
+                                    $data = trim($data);
+                                    if(
+                                        preg_match('/предоставляется на территории всего отеля бесплатно/i', $data)
+                                        || preg_match('/предоставляется в номерах отеля бесплатно/i', $data)
+                                        || preg_match('/предоставляется в общественных зонах бесплатно/i', $data)
+
+                                    ){
+                                        $hotel->setFreeWiFi(1);
+                                    }else{
+                                        $hotel->setFreeWiFi(0);
+                                    }
+
+                                    $hotel->setWiFi($data);
+
+                                    echo '<b>Internet:</b> ' . ($hotel->getFreeWiFi() ? 'Free' : 'Paid') . ', '.$data.'<br />' . PHP_EOL;
+                                }
+                                */
+
+                                $hotel->save();
+                            }
                         }
-
-
-                        $data = $qp->find('#summary')->find('p')->not('.hp_district_endorsements')->get();
-                        $text = array();
-                        foreach($data as $item){
-                            if(!empty($item->textContent)) $text[] = $item->textContent;
-                        }
-                        if(!empty($text)){
-                            $text = implode(' ', $text);
-                            $hotel->setSummary($text);
-                            echo '<b>Summary:</b> '.$text.'<br />' . PHP_EOL;
-                        }
-
-                        $data = trim($qp->find('#summary')->find('.hp_district_endorsements')->eq(0)->text());
-                        if(!empty($data)){
-                            //$hotel->setAddress($data);
-                            echo '<b>District char:</b> '.str_replace("\n", '===', $data).'<br />' . PHP_EOL;
-                        }
-
-                        $hotel->save();
 
                         if(rename($fname, $newFname)) echo 'Source file renamed'; else echo 'Source file rename failed';
+                        echo '<br />'.PHP_EOL;
 
-                        break;
+                        //break;
                     }
                 }
             }
 
         }catch (PException $e){
+            echo $e->getMessage();
+        }
+
+        $this->view->disable();
+    }
+
+    public function correctHotelOriginUrlAction()
+    {
+        try {
+            $hotels = new Hotels();
+            $query = $hotels->query();
+
+            if($result = $query->execute()){
+                foreach($result as $hotel){
+                    $url = $hotel->getUrlOrig();
+                    $url = explode('?', $url);
+                    $url = reset($url);
+
+                    $hotel->setUrlOrig($url);
+
+                    $hotel->update();
+
+                    echo $hotel->getHotelId().': '.$hotel->getName().' '.$url.'<br />';
+                }
+            }
+
+        }catch (PException $e){
+            echo $e->getLine().'<br />' . PHP_EOL;
+            echo $e->getMessage();
+        }
+
+        $this->view->disable();
+    }
+
+    public function correctHotelAddressAction()
+    {
+        try {
+            $hotels = new Hotels();
+            $query = $hotels->query();
+            //$query->limit(1);
+
+            if($result = $query->execute()){
+                foreach($result as $hotel){
+                    $address = $hotel->getAddressOrig();
+                    $address = preg_replace('/,$/i', '', $address);
+                    $hotel->setAddressOrig($address);
+
+                    $hotel->update();
+
+                    echo $hotel->getHotelId().': '.$hotel->getName().'; '.$address.'<br />';
+                }
+            }
+
+        }catch (PException $e){
+            echo $e->getLine().'<br />' . PHP_EOL;
+            echo $e->getMessage();
+        }
+
+        $this->view->disable();
+    }
+
+    public function downloadHotelGalleryAction()
+    {
+        try {
+            $hotels = new Hotels();
+            $query = $hotels->query()
+                ->where('download_started = 0')
+                ->andWhere("gallery !=''")
+                ->andWhere("gallery is not null")
+                ->limit(1);
+
+            if($result = $query->execute()){
+                foreach($result as $hotel){
+
+                    echo $hotel->getHotelId().': '.$hotel->getName().' <br />';
+
+                    if($gallery = $hotel->getGallery()){
+
+                        $hotel->setDownloadStarted(1);
+
+                        $hotel->update();
+
+                        $gallery = explode(', ', $gallery);
+                        foreach($gallery as $index=>$item){
+                            echo '<a href="'.$item.'" target="_blank">'.$item.'</a>';
+                            $fPath = $_SERVER['DOCUMENT_ROOT'].'/rawHotels/items/downloaded/'.$hotel->getHotelId().'_'.$index.'.jpg';
+                            if(@copy($item, $fPath)) echo ' <span style="color:green;">ok</span>'; else echo ' <span style="color:red;">failed</span>';
+                            echo '<br />';
+                        }
+
+                        $hotel->setGalleryDownloaded(1);
+
+                        $hotel->update();
+                    }
+
+                }
+            }
+
+        }catch (PException $e){
+            echo $e->getLine().'<br />' . PHP_EOL;
             echo $e->getMessage();
         }
 
