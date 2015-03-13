@@ -1,54 +1,23 @@
 <?php
 
-use Phalcon\Mvc\Model\Validator\PresenceOf,
-    Phalcon\Mvc\Model\Validator\Email;
-
 class Users extends \Phalcon\Mvc\Model
 {
 
-    /**
-     *
-     * @var integer
-     */
     protected $id;
 
-    /**
-     *
-     * @var integer
-     */
     protected $visible;
 
-    /**
-     *
-     * @var string
-     */
     protected $name;
 
-    /**
-     *
-     * @var string
-     */
+    protected $city;
+
     protected $sid;
 
-    /**
-     *
-     * @var string
-     */
     protected $login;
 
-    /**
-     *
-     * @var string
-     */
     protected $password;
 
 
-    /**
-     * Method to set the value of field visible
-     *
-     * @param integer $visible
-     * @return $this
-     */
     public function setVisible($visible)
     {
         $this->visible = $visible;
@@ -56,12 +25,6 @@ class Users extends \Phalcon\Mvc\Model
         return $this;
     }
 
-    /**
-     * Method to set the value of field name
-     *
-     * @param string $name
-     * @return $this
-     */
     public function setName($name)
     {
         $this->name = $name;
@@ -69,10 +32,6 @@ class Users extends \Phalcon\Mvc\Model
         return $this;
     }
 
-    /**
-     * @param $name
-     * @return $this
-     */
     public function setCity($name)
     {
         $this->city = $name;
@@ -80,13 +39,6 @@ class Users extends \Phalcon\Mvc\Model
         return $this;
     }
 
-
-    /**
-     * Method to set the value of field sid
-     *
-     * @param string $sid
-     * @return $this
-     */
     public function setSid($sid)
     {
         $this->sid = $sid;
@@ -94,12 +46,6 @@ class Users extends \Phalcon\Mvc\Model
         return $this;
     }
 
-    /**
-     * Method to set the value of field login
-     *
-     * @param string $login
-     * @return $this
-     */
     public function setLogin($login)
     {
         $this->login = $login;
@@ -107,12 +53,6 @@ class Users extends \Phalcon\Mvc\Model
         return $this;
     }
 
-    /**
-     * Method to set the value of field password
-     *
-     * @param string $password
-     * @return $this
-     */
     public function setPassword($password)
     {
         $this->password = $password;
@@ -120,85 +60,45 @@ class Users extends \Phalcon\Mvc\Model
         return $this;
     }
 
-    /**
-     * Returns the value of field id
-     *
-     * @return integer
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * Generate session id key
-     * @return string
-     */
     public function makeSid(){
         return $this->getDI()->get('security')->hash(time());
     }
 
-    /**
-     * Returns the value of field visible
-     *
-     * @return integer
-     */
     public function getVisible()
     {
         return $this->visible;
     }
 
-    /**
-     * Returns the value of field name
-     *
-     * @return string
-     */
     public function getName()
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
     public function getCity()
     {
         return $this->city;
     }
 
-    /**
-     * Returns the value of field sid
-     *
-     * @return string
-     */
     public function getSid()
     {
         return $this->sid;
     }
 
-    /**
-     * Returns the value of field login
-     *
-     * @return string
-     */
     public function getLogin()
     {
         return $this->login;
     }
 
-    /**
-     * Returns the value of field password
-     *
-     * @return string
-     */
     public function getPassword()
     {
         return $this->password;
     }
 
-    /**
-     * Independent Column Mapping.
-     */
     public function columnMap()
     {
         return array(
@@ -213,34 +113,24 @@ class Users extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Validate login form
+     * Create a new user
      * @return bool
+     * @throws Exception
      */
-    public function validation()
+    public function signup()
     {
-        $this->validate(new PresenceOf(
-            array(
-                "field"  => "login",
-                "message" => 'Укажите e-mail',
-            )
-        ));
+        // Check if login exists
+        if($user = $this->checkIfLoginExists($this->getLogin())) throw new \Exception('Login exists');
 
-        $this->validate(new Email(
-            array(
-                "field"  => "login",
-                "message" => 'Укажите реальный e-mail',
-            )
-        ));
+        // Create a new user
+        if(!$this->save()) throw new \Exception('User creation failed');
 
-        $this->validate(new PresenceOf(
-            array(
-                "field"  => "password",
-                "message" => 'Укажите пароль'
-            )
-        ));
+        // Force login
+        $this->login($this->getLogin(), $this->getPassword(), true);
 
-        return $this->validationHasFailed() != true;
+        return true;
     }
+
 
     /**
      * Perform login
@@ -249,13 +139,12 @@ class Users extends \Phalcon\Mvc\Model
      * @return bool
      * @throws Exception
      */
-    public function login($login = '', $password = '')
+    public function login($login = '', $password = '', $passwordSecured = false)
     {
-        // Remove last session id (sid)
         $this->getSession()->remove('sid');
 
         // Get user by auth data
-        $user = $this->getByAuthData($login, $password);
+        $user = $this->getByAuthData($login, $password, $passwordSecured);
 
         // Generate new session id
         if(!$sid = $this->makeSid()) throw new \Exception('Empty session id');
@@ -265,6 +154,7 @@ class Users extends \Phalcon\Mvc\Model
 
         // Store sid in the session
         $this->getSession()->set('sid', $sid);
+        $this->getSession()->set('uid', $user->getId());
 
         // Update user
         if(!$user->update()) throw new \Exception('Session id update failed');
@@ -273,13 +163,42 @@ class Users extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Get user by auth data: login & passord
+     * Checks if current user is authorised
+     * no matter who it is
+     * @return bool
+     */
+    public function isAuthorised(){
+        try{
+            if(!$this->getSession()->has('sid')) throw new \Exception;
+
+            return true;
+        }catch (\Exception $e){
+            return false;
+        }
+    }
+
+    /**
+     * Checks if login exists
+     * @param string $login
+     * @return Users|null
+     * @throws Exception
+     */
+    public function checkIfLoginExists($login = ''){
+        if(empty($login)) throw new \Exception('Не указан login');
+
+        $result = $this->query()->where("login='{$login}'")->limit(1)->execute();
+
+        return ($user = $result->getFirst()) ? $user : null;
+    }
+
+    /**
+     * Get user by login & password
      * @param string $login
      * @param string $password
      * @return Users
      * @throws Exception
      */
-    public function getByAuthData($login = '', $password = '')
+    public function getByAuthData($login = '', $password = '', $passwordSecured = false)
     {
         if(empty($login)) $login = $this->getLogin();
         if(empty($password)) $password = $this->getPassword();
@@ -287,11 +206,13 @@ class Users extends \Phalcon\Mvc\Model
         if(empty($login)) throw new \Exception('Не указан login');
         if(empty($password)) throw new \Exception('Не указан пароль');
 
-        $result = $this->query()->where("login='{$login}'")->limit(1)->execute();
+        if(!$user = $this->checkIfLoginExists($login)) throw new Exception('Пользователь не зарегистрирован');
 
-        if(!$user = $result->getFirst()) throw new \Exception('Пользователь не зарегистрирован');
-
-        if(!$this->getDI()->get('security')->checkHash($password, $user->password)) throw new \Exception('Неверный пароль');
+        if($passwordSecured){
+            if($password != $user->password) throw new \Exception('Неверный пароль');
+        }else{
+            if(!$this->getDI()->get('security')->checkHash($password, $user->password)) throw new \Exception('Неверный пароль');
+        }
 
         return $user;
     }
@@ -317,28 +238,18 @@ class Users extends \Phalcon\Mvc\Model
         }
     }
 
+    /**
+     * Logging out and destroy current session
+     */
     public function logout(){
         $this->getSession()->destroy();
     }
 
     /**
+     * Returns current session service
      * @return Phalcon\Session\Bag()
      */
     protected function getSession(){
         return $this->getDI()->get('session');
-    }
-
-    /**
-     * Returns people grid item uri
-     * @return string
-     */
-    public function getPeopleItemUri()
-    {
-        $uri = $this->getDI()->get('url')->get(array(
-            'for'=>'peopleItem',
-            'id'=>$this->getId(),
-        ));
-
-        return $uri;
     }
 }

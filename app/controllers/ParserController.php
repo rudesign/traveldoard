@@ -1,10 +1,21 @@
 <?php
 
+/*
+ * /parser/getCityJSON - получение JSON-данных о каждом населённом пункте (200)
+ * /process/getCityJSON - расшифровка JSON-данных о каждом населённом пункте (201)
+ * /parser/getCityHotels - download hotels list html files (202)
+ * /process/getCityHotels - get hotels from html files
+ * /parser/getHotel - get stored hotel html (202)
+ * /process/getHotel - get hotel info from html
+ * */
+
 use Phalcon\Http\Client\Request;
 use Phalcon\Exception as PException;
 
 class ParserController extends BaseController
 {
+    private $countryId = 65;
+
     public function initialize(){
         parent::initialize();
     }
@@ -27,15 +38,17 @@ class ParserController extends BaseController
     // 200: city JSON is catched from origin
     public function getCityJSONAction(){
 
-        for($i=0;$i<5;$i++) {
+        for($i=0;$i<10;$i++) {
             $cities = new Cities();
 
-            $result = $cities->query()->where('country_id = 1')->andWhere('http_status IS NULL')->orderBy('city_id')->limit(1)->execute();
+            $result = $cities->query()->where('country_id = '.$this->countryId)->andWhere('http_status IS NULL')->orderBy('city_id')->limit(1)->execute();
 
             if ($city = $result->getFirst()) {
-                echo $city->getCityId() . ': ' . $city->getTitleEn();
+                echo $city->getTitleEn().', '.$city->getRegionEn().', Deutschland ('.$city->getCityId().')';
 
-                $jsonStr = $this->getLocationJSON($city->getTitleEn(), $city->getRegionRu(), 'Россия');
+                echo '<br />' . PHP_EOL;
+
+                $jsonStr = $this->getLocationJSON($city->getTitleEn(), $city->getRegionEn(), 'Deutschland');
 
                 echo $jsonStr.'<br />' . PHP_EOL;
 
@@ -54,15 +67,6 @@ class ParserController extends BaseController
 
         $this->view->disable();
     }
-
-    // curl -i
-    // -H "User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36"
-    // -H "Content-Type: text/plain; charset=utf-8"
-    // -H "Accept: */*"
-    // -H "Accept-Encoding: gzip, deflate, sdch"
-    // -H "Accept-Language: en-US,en;q=0.8,ru;q=0.6"
-    // -H "Cookie: utag_main=v_id:0149e65771d7001ecb26216f6ca605066003705e00bd0$_sn:1$_ss:1$_pn:1%3Bexp-session$_st:1416910530839$ses_id:1416908730839%3Bexp-session; zz_cook_segment=1; _ga=GA1.2.272112262.1416908731; __utma=1.272112262.1416908731.1416908731.1416908731.1; __utmc=1; __utmz=1.1416908731.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); bkng=11UmFuZG9tSVYkc2RlIyh9YWJdm48m5cJDWuLLIYaigN7j6j48cUdQU8ks0%2Fk62aC%2BxdDf7fqoRnTtnrQ7rtxNgi9Nffvg1Sj17HjkVCAzuJbqR8QXty4azG%2BIzhFHqNRBFT1J1B8B%2FYIgcqxushhAUAh2A4WabiSsfZRFPR2tf2qTMKNI0dulkCB53sH2MK8L149VfRyORNE%3D"
-    // -X GET 'http://booking.com/autocomplete?lang=ru&pid=6b1c422f5a320072&sid=02da8e0f4b98680e70edc35ac6b45492&aid=304142&stype=1&force_ufi=&cities_first=1&should_split=1&sugv=br&e_acb1=1&e_acb2=1&eb=0&add_themes=1&themes_match_start=0&include_synonyms=1&e_nr_labels=1&e_obj_labels=1&exclude_some_hotels=1&include_dest_count=1&max_results=10&include_extra_synonyms=0&term=Italy'
 
     private function getLocationJSON($slocation = '', $region = '', $country = ''){
 
@@ -100,49 +104,9 @@ EOD;
 
 
             foreach($output->city as $set){
-                /*
-                [cc1] => ru
-                [city_ufi] =>
-                [dest_id] => -2960561
-                [dest_type] => city
-                [hotels] => 1386
-                [label] => Moscow, Russia
-                [label_highlighted] => <b>Moscow</b>, Russia
-                [labels] => Array
-                    (
-                        [0] => stdClass Object
-                            (
-                                [hl] => 1
-                                [required] => 1
-                                [text] => Moscow
-                                [type] => city
-                            )
-
-                        [1] => stdClass Object
-                            (
-                                [required] => 1
-                                [text] => Russia
-                                [type] => country
-                            )
-
-                    )
-
-                [lc] => en
-                [meta] => Array
-                    (
-                    )
-
-                [nr_hotels] => 1386
-                [nr_hotels_25] => 1503
-                [nr_hotels_label] => 1386 вариантов размещения
-                [rtl] => 0
-                [type] => ci
-                */
                 $stdOut[] = $set->label_highlighted;
                 $stdOut[] = '<a href="http://booking.com/searchresults.ru.html?city='.$set->dest_id.'" target="_blank">'.$set->nr_hotels_label.'</a>';
                 $stdOut[] = '';
-
-
             }
 
             echo '<h1>'.$location.'</h1>';
@@ -157,7 +121,7 @@ EOD;
 
         $cities = new Cities();
 
-        $result = $cities->query()->where('country_id = 1')->andWhere('hotels > 0')->andWhere('shift < hotels')->limit(1)->execute();
+        $result = $cities->query()->where('country_id = '.$this->countryId)->andWhere('hotels > 0')->andWhere('shift < hotels')->limit(1)->execute();
 
         if($city = $result->getFirst()){
             $shift = $city->getShift();
@@ -200,42 +164,52 @@ EOD;
         $this->view->disable();
     }
 
-    // 202
+    // download hotel html (set 202 for hotel)
     public function getHotelAction()
     {
         try {
-            $hotels = new Hotels();
 
-            $result = $hotels->query()
-                ->where('url_orig IS NOT NULL')
-                ->andWhere('status IS NULL')
-                ->orderBy('hotel_id')
-                ->limit(1)
-                ->execute();
+            for($i=0;$i<4;$i++) {
 
-            if (!$hotel = $result->getFirst()) throw new \Phalcon\Exception('No data');
+                $hotels = new Hotels();
 
-            $fname = $_SERVER['DOCUMENT_ROOT'].'/rawHotels/items/'.$hotel->getHotelId().'.html';
+                $result = $hotels->query()
+                    ->where('url_orig IS NOT NULL')
+                    ->andWhere('status IS NULL')
+                    ->orderBy('hotel_id')
+                    ->limit(1)
+                    ->execute();
 
-            if(!$res = fopen($fname, 'a')) throw new PException('Cannot open file for writing');
+                if (!$hotel = $result->getFirst()) throw new \Phalcon\Exception('No data');
 
-            $location = $hotel->getUrlOrig();
+                $fname = $_SERVER['DOCUMENT_ROOT'] . '/rawHotels/items/' . $hotel->getHotelId() . '.html';
 
-            $bashCommand = <<<EOD
+                if (!$res = fopen($fname, 'a')) throw new PException('Cannot open file for writing');
+
+                $location = $hotel->getUrlOrig();
+
+                if (!$location = preg_replace('/\?\S+/i', '', $location)) throw new PException('Location error');
+
+                $hotel->setUrlOrig($location);
+
+                echo $location . '<br />' . PHP_EOL;
+
+                $bashCommand = <<<EOD
 curl -H "User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36" -H "Content-Type: text/plain; charset=utf-8" -H "Accept: text/plain" -H "Accept-Language: en-US,en;q=0.8,ru;q=0.6" -X GET -L 'http://booking.com$location'
 EOD;
 
-            $output = shell_exec($bashCommand);
+                $output = shell_exec($bashCommand);
 
-            fwrite($res, $output);
+                if (!@fwrite($res, $output)) throw new PException('File writting failed');
 
-            fclose($res);
+                fclose($res);
 
-            $hotel->setStatus(202);
+                $hotel->setStatus(202);
 
-            if(!$hotel->update()) throw new \Phalcon\Exception('Status update failed');
+                if (!$hotel->update()) throw new PException('Status update failed');
 
-            echo $hotel->getHotelId().'.html stored<br />' . PHP_EOL;
+                echo $hotel->getHotelId() . '.html stored<br />' . PHP_EOL;
+            }
 
         }catch (PException $e){
             echo $e->getMessage().'<br >' . PHP_EOL;
