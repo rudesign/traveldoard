@@ -6,7 +6,8 @@
  * /parser/getCityHotels - download hotels list html files (202)
  * /process/getCityHotels - get hotels from html files
  * /parser/getHotel - get stored hotel html (202)
- * /process/getHotel - get hotel info from html
+ * /process/getHotel - get hotel info from html (203)
+ * /process/downloadHotelGallery - get hotel gallery (204)
  * */
 
 use Phalcon\Http\Client\Request;

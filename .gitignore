@@ -1,9 +1,7 @@
-app/cache
-public/files
-public/temp
-*.sql
-public/rawHotels
 .htpasswd
-public/i.php
+*.sql
 src
+public/rawHotels
+public/i.php
+app/cache
 app/config/config.php
