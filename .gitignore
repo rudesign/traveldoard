@@ -1,5 +1,6 @@
 .htpasswd
 *.sql
+*.7z
 src
 public/rawHotels
 public/i.php
