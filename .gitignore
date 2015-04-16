@@ -2,6 +2,7 @@
 *.sql
 *.7z
 src
+dump
 public/rawHotels
 public/i.php
 app/cache
