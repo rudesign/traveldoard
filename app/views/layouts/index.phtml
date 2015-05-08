@@ -1,5 +1,23 @@
 <div class="content">
-    <div class="content-wrapper clearfix">
-        <?= $this->tag->linkTo('hotels', 'Список отелей') ?>
+    <div class="clearfix">
+        <div class="flights form">
+            <form method="post">
+                <dl>Source</dl>
+                <dt>
+                    <select name="destination">
+                        <option value="NYC">New York City</option>
+                    </select>
+                </dt>
+                <dl>Destination</dl>
+                <dt>
+                    <select name="destination">
+                        <option value="LAX">Los Angeles</option>
+                    </select>
+                </dt>
+                <dt><button onclick="return showFlights();">Показать</button></dt>
+            </form>
+
+            <div class="result"></div>
+        </div>
     </div>
 </div>

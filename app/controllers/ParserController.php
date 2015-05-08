@@ -15,7 +15,8 @@ use Phalcon\Exception as PException;
 
 class ParserController extends BaseController
 {
-    private $countryId = 65;
+    private $countryId = 209;
+    private $countryName = 'France';
 
     public function initialize(){
         parent::initialize();
@@ -45,11 +46,11 @@ class ParserController extends BaseController
             $result = $cities->query()->where('country_id = '.$this->countryId)->andWhere('http_status IS NULL')->orderBy('city_id')->limit(1)->execute();
 
             if ($city = $result->getFirst()) {
-                echo $city->getTitleEn().', '.$city->getRegionEn().', Deutschland ('.$city->getCityId().')';
+                echo $city->getTitleEn().', '.$city->getRegionEn().', '.$this->countryName.' ('.$city->getCityId().')';
 
                 echo '<br />' . PHP_EOL;
 
-                $jsonStr = $this->getLocationJSON($city->getTitleEn(), $city->getRegionEn(), 'Deutschland');
+                $jsonStr = $this->getLocationJSON($city->getTitleEn(), $city->getRegionEn(), $this->countryName);
 
                 echo $jsonStr.'<br />' . PHP_EOL;
 
@@ -78,7 +79,7 @@ class ParserController extends BaseController
         $location = urlencode($location);
 
         $bashCommand = <<<EOD
-curl -H "User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36" -H "Content-Type: text/plain; charset=utf-8" -H "Accept: application/json" -H "Accept-Encoding: gzip, deflate, sdch" -H "Accept-Language: en-US,en;q=0.8,ru;q=0.6" -X GET 'http://booking.com/autocomplete?lang=ru&pid=6b1c422f5a320072&sid=02da8e0f4b98680e70edc35ac6b45492&aid=304142&stype=1&force_ufi=&cities_first=1&should_split=1&sugv=br&e_acb1=1&e_acb2=1&eb=0&add_themes=1&themes_match_start=0&include_synonyms=1&e_nr_labels=1&e_obj_labels=1&exclude_some_hotels=1&include_dest_count=1&max_results=10&include_extra_synonyms=0&term=$location'
+curl -H "User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36" -H "Content-Type: text/plain; charset=utf-8" -H "Accept: application/json" -H "Accept-Encoding: gzip, deflate, sdch" -H "Accept-Language: en-US,en;q=0.8,ru;q=0.6" -X GET 'http://www.booking.com/autocomplete?lang=ru&pid=6b1c422f5a320072&sid=02da8e0f4b98680e70edc35ac6b45492&aid=304142&stype=1&force_ufi=&cities_first=1&should_split=1&sugv=br&e_acb1=1&e_acb2=1&eb=0&add_themes=1&themes_match_start=0&include_synonyms=1&e_nr_labels=1&e_obj_labels=1&exclude_some_hotels=1&include_dest_count=1&max_results=10&include_extra_synonyms=0&term=$location'
 EOD;
 
         $output = shell_exec($bashCommand);

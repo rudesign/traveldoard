@@ -16,7 +16,7 @@ class ViewsController extends BaseController
         $this->assets
             ->collection('cssBefore')
             ->addCss('css/font-awesome-4.2.0/css/font-awesome.min.css')
-            ->addCss('css/style.min.css');
+            ->addCss('css/style.css');
 
         // CSS at the end of <body>
         $this->assets
@@ -37,7 +37,7 @@ class ViewsController extends BaseController
             ->addJs('js/jquery.form.min.js')
             ->addJs('js/jquery.easing.1.3.min.js')
             ->addJs('js/jquery.cookie.js')
-            ->addJs('js/common.js');
+            ->addJs('js/scripts.js');
     }
 
     protected function notify($message = '', $type = 'common')

@@ -27,6 +27,8 @@ include __DIR__ . '/process.php';
 
 include __DIR__ . '/hotels.php';
 
+include __DIR__ . '/sabre.php';
+
 // Not found
 $router->notFound(array(
     'controller'=>'error',

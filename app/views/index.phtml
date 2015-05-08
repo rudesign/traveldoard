@@ -10,15 +10,9 @@
 </head>
 <body>
 <div class="root">
-	<?= $this->partial('notification') ?>
-
-	<?= $this->partial('header') ?>
-
-	<?= $this->partial('menu') ?>
 
 	<?= $this->getContent() ?>
 
-	<?= $this->partial('footer') ?>
 </div>
 <?= $this->assets->outputCss('cssAfter') ?>
 <?= $this->assets->outputJs('jsAfter') ?>
