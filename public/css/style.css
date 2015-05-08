@@ -58,7 +58,7 @@ input::-moz-focus-inner {
   font-weight: 400;
   line-height: 1.3em; }
 
-.bold {
+b, .bold {
   font-weight: 700; }
 
 html {
@@ -86,9 +86,9 @@ button, .buttons {
   margin: 0 auto; }
 
 .flights.form dl {
-  margin-bottom: 3px; }
-.flights.form dt {
   margin-bottom: 5px; }
+.flights.form dt {
+  margin-bottom: 10px; }
 .flights .result {
   margin-top: 30px; }
   .flights .result ul {
@@ -101,5 +101,7 @@ button, .buttons {
     border: none; }
   .flights .result li {
     margin: 2px 0; }
+.flights .leg {
+  margin-bottom: 10px; }
 
 /*# sourceMappingURL=style.css.map */

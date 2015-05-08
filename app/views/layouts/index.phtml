@@ -2,19 +2,22 @@
     <div class="clearfix">
         <div class="flights form">
             <form method="post">
-                <dl>Source</dl>
+                <dl>Departure</dl>
                 <dt>
                     <select name="destination">
                         <option value="NYC">New York City</option>
                     </select>
                 </dt>
-                <dl>Destination</dl>
+                <dl>Arrival</dl>
                 <dt>
                     <select name="destination">
                         <option value="LAX">Los Angeles</option>
                     </select>
                 </dt>
-                <dt><button onclick="return showFlights();">Показать</button></dt>
+                <dt>
+                    <button onclick="return showFlights();">Показать</button>
+                    <button onclick="return showFlightsSource();">Source</button>
+                </dt>
             </form>
 
             <div class="result"></div>

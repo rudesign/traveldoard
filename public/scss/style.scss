@@ -14,7 +14,7 @@ $contentWidth: 1000px;
   line-height: 1.3em;
 }
 
-.bold{
+b, .bold{
   font-weight: 700;
 }
 
@@ -57,10 +57,10 @@ button, .buttons{
     dl{
       @extend .small;
 
-      margin-bottom: 3px;
+      margin-bottom: 5px;
     }
     dt{
-      margin-bottom: 5px;
+      margin-bottom: 10px;
     }
   }
   .result{
@@ -81,5 +81,9 @@ button, .buttons{
     li{
       margin: 2px 0;
     }
+  }
+
+  .leg{
+    margin-bottom: 10px;
   }
 }
