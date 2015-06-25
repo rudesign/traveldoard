@@ -173,7 +173,7 @@ EOD;
     {
         try {
 
-            for($i=0;$i<1;$i++) {
+            for($i=0;$i<4;$i++) {
 
                 $hotels = new Hotels();
 
