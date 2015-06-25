@@ -1,9 +1,11 @@
 <?php
 
 /*
+ * ---> Cities
  * /parser/getCityJSON - получение JSON-данных о каждом населённом пункте (200)
  * /process/getCityJSON - расшифровка JSON-данных о каждом населённом пункте (201)
  * /parser/getCityHotels - download hotels list html files (202)
+ * ---> Hotels
  * /process/getCityHotels - get hotels from html files
  * /parser/getHotel - get stored hotel html (202)
  * /process/getHotel - get hotel info from html (203)

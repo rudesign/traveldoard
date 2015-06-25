@@ -197,7 +197,7 @@ class ProcessController extends BaseController
     public function getHotelAction()
     {
         try {
-            for($l=0;$l<5;$l++){
+            for($l=0;$l<1;$l++){
 
                 // QueryParser location
                 $lPath = $this->config->application->libraryDir . 'querypath/src/qp.php';
