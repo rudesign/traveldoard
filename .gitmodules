@@ -1,0 +1,6 @@
+[submodule "incubator"]
+	path = incubator
+	url = https://github.com/phalcon/incubator.git
+[submodule "app/library/querypath"]
+	path = app/library/querypath
+	url = https://github.com/technosophos/querypath.git
