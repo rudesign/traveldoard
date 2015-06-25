@@ -202,7 +202,7 @@ class ProcessController extends BaseController
                 // QueryParser location
                 $lPath = $this->config->application->libraryDir . 'querypath/src/qp.php';
 
-                require $lPath;
+                @require $lPath;
 
                 if(!function_exists('qp')) throw new PException('No parser');
 
@@ -211,11 +211,10 @@ class ProcessController extends BaseController
 
                 //echo $path.'<br />' . PHP_EOL;
 
-                if (!$handle = opendir($path)) throw new PException('Cannot read dir');
+                if (!$handle = @opendir($path)) throw new PException('Cannot read dir');
 
                 // walk over all stored files in the dir
                 while (($entry = readdir($handle)) !== false) {
-                    //$entry = '23583.html';
 
                     if (strlen($entry) > 2) {
 
@@ -232,22 +231,21 @@ class ProcessController extends BaseController
                             if ($rawEntry = explode('.', $entry)) $hotelId = (int) reset($rawEntry);
 
                             $hotels = new Hotels();
-                            if($hotel = $hotels->query()->where('hotel_id='.$hotelId)->execute()->getFirst()) {
 
-                                //$qp = htmlqp($fname, '#right');
+                            if($hotel = $hotels->query()->where('hotel_id='.$hotelId)->limit(1)->execute()->getFirst()) {
+
                                 $qp = htmlqp($fname, 'html');
 
                                 if ($qp->count()){
 
                                     echo 'Process <a href="/rawHotels/items/' . $hotel->getHotelId() . '.html" target="_blank">' . $hotel->getName() . '</a>, ' . $hotel->cities->getTitleRu() . '<br />' . PHP_EOL;
 
-
                                     // address
 
                                     $data = trim($qp->find('#hp_address_subtitle')->eq(0)->text());
                                     if (!empty($data)) {
-                                        $hotel->setAddressOrig($data);
                                         echo '<b>Address:</b> ' . $data . '<br />' . PHP_EOL;
+                                        $hotel->setAddressOrig($data);
                                         echo $hotel->save() ? 'OK' : 'Failed';
                                         echo '<br />' . PHP_EOL;
                                     }
@@ -311,9 +309,9 @@ class ProcessController extends BaseController
                                     // images
                                     $i = 0;
                                     $gallery = array();
-                                    while($data = $qp->find('#photos_distinct')->eq(0)->find('a.change_large_image_on_hover')->eq($i)->attr('data-resized')){
-                                        echo $data.'<br />';
-                                        $gallery[] = $data;
+                                    while(($data = $qp->find('.hp-gallery')->find('img')->eq($i)->attr('src')) || ($data1 = $qp->find('.hp-gallery')->find('img')->eq($i)->attr('data-lazy'))){
+                                        $src =  $gallery[] = !empty($data) ? $data : $data1;
+                                        echo '<a href="'.$src.'" target="_blank">'.$src.'</a><br />';
                                         $i++;
                                     }
                                     $gallery = implode(', ', $gallery);
@@ -500,12 +498,14 @@ class ProcessController extends BaseController
                                     }
                                 }
 
-                                $hotel->setStatus(203);
+                                //$hotel->setStatus(203);
                                 echo $hotel->save() ? 'Status 203 OK' : 'Status change failed';
                                 echo '<br />' . PHP_EOL;
+                            }else {
+                                echo 'No data<br />' . PHP_EOL;
                             }
 
-                            if(rename($fname, $newFname)) echo 'Source file renamed'; else echo 'Source file rename failed';
+                            //if(rename($fname, $newFname)) echo 'Source file renamed'; else echo 'Source file rename failed';
                             echo '<br />'.PHP_EOL;
 
                             break;
