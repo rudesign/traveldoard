@@ -498,14 +498,14 @@ class ProcessController extends BaseController
                                     }
                                 }
 
-                                //$hotel->setStatus(203);
+                                $hotel->setStatus(203);
                                 echo $hotel->save() ? 'Status 203 OK' : 'Status change failed';
                                 echo '<br />' . PHP_EOL;
                             }else {
                                 echo 'No data<br />' . PHP_EOL;
                             }
 
-                            //if(rename($fname, $newFname)) echo 'Source file renamed'; else echo 'Source file rename failed';
+                            if(rename($fname, $newFname)) echo 'Source file renamed'; else echo 'Source file rename failed';
                             echo '<br />'.PHP_EOL;
 
                             break;
